@@ -1,7 +1,10 @@
 
 #include "simpleParticleSystem2D.hpp"
+#include "defines.hpp"
 #include "rand.hpp"
 #include "utils.hpp"
+
+#define __PRINT 0
 
 SimpleParticleSystem2D::SimpleParticleSystem2D(unsigned int nParticles_, float dt_) :
     ParticleSystem(nParticles_, dt_),
@@ -114,7 +117,7 @@ void SimpleParticleSystem2D::computeAccelerations()
         
         p.P() = _P_0*(powf(p.rho()/_rho_0, 7) - 1); 
     
-        if(print) {
+        if(print && __PRINT) {
             std::cout << "RHO="<<p.rho() << "\tRHO/RHO0=" << p.rho()/_rho_0  << "\t" << "P=" << p.P() << std::endl;
             print = false;
         }
@@ -149,7 +152,7 @@ void SimpleParticleSystem2D::computeAccelerations()
                     V0 = p.x()[0] - n->x()[0];
                     V1 = p.x()[1] - n->x()[1];
 
-                    dP = p.rho()*n->m()*(p.P()/(p.rho()*p.rho()) + n->P()/(n->rho()*n->rho()));
+                    dP = n->m()*(p.P()/(p.rho()*p.rho()) + n->P()/(n->rho()*n->rho()));
 
                     dPx += dP*D_Wx(p.x(),n->x());
                     dPy += dP*D_Wy(p.x(),n->x());
@@ -161,7 +164,7 @@ void SimpleParticleSystem2D::computeAccelerations()
                     d2Vx += V0*d2V;
                     d2Vy += V1*d2V;
 
-                    if(print) {
+                    if(print && __PRINT) {
                         std::cout << "Particle " << n << " is a friend !" << n->x()[0] << "," << n->x()[1] << std::endl;
                         printf("W = %f\n",W(p.x(),n->x()));
                         printf("(D_Wx,D_Wy)=(%f,%f)\n",D_Wx(p.x(),n->x()),D_Wy(p.x(),n->x()));
@@ -178,18 +181,22 @@ void SimpleParticleSystem2D::computeAccelerations()
         p.a()[1] = 0.0f;
         
         //acceleration due to pressure
-        p.a()[0] += 1/p.rho()*dPx;
-        p.a()[1] += 1/p.rho()*dPy;
+        //p.a()[0] += -dPx;
+        //p.a()[1] += -dPy;
 
         //acceleration due to viscosity
-        p.a()[0] += _nu*d2Vx;
-        p.a()[1] += _nu*d2Vy;
+        //p.a()[0] += _nu*d2Vx;
+        //p.a()[1] += _nu*d2Vy;
 
         //acceleration due to gravity
         p.a()[0] += 0;
         p.a()[1] += -_g;
+
+        //damping
+        p.a()[0] += -_k*p.v()[0];
+        p.a()[1] += -_k*p.v()[1];
             
-        if (print) {
+        if (print && __PRINT) {
             printf("Pressure Gradient \t(dPx,dPy)=(%f,%f)\n",dPx,dPy);
             printf("Velocity Laplacian \t(d2Vx,d2Vy)=(%f,%f)\n",d2Vx,d2Vy);
             printf("Pressure Acceleration \t(Apx,Apy)=(%f,%f)\n", 1/p.rho()*dPx, 1/p.rho()*dPy);
@@ -218,13 +225,13 @@ void SimpleParticleSystem2D::integrateScheme()
         p.x()[0] = max(0.0f,min(_w,p.x()[0] + _dt*v_halfStepX));
         p.x()[1] = max(0.0f,min(_h,p.x()[1] + _dt*v_halfStepY));
         
-        p.i() = ceil(abs(p.x()[1])/(2*_dh));
-        p.j() = ceil(abs(p.x()[0])/(2*_dh));
+        p.i() = ceil(p.x()[1])/(2*_dh);
+        p.j() = ceil(p.x()[0])/(2*_dh);
         
         p.v()[0] = 1/2.0f*(p.v_old()[0] + v_halfStepX);
         p.v()[1] = 1/2.0f*(p.v_old()[1] + v_halfStepY);
 
-        if (print) {
+        if (print && __PRINT) {
             printf("(X',Y')=(%f,%f)\n", p.x()[0], p.x()[1]);
             printf("(Vx',Vy')=(%f,%f)\n", p.v()[0], p.v()[1]);
             printf("(Ax',Ay')=(%f,%f)\n", p.a()[0], p.a()[1]);

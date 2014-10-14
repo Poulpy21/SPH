@@ -14,13 +14,27 @@
 #include "renderRoot.hpp"
 #include "viewer.hpp"
 
+#include "implicitTree.h"
+#include "implicitFunc.h"
+
 
 #include "simpleParticleSystem2D.hpp"
 
 using namespace log4cpp;
 
 int main(int argc, char** argv) {
-    
+        
+        node_s *n1 = makeDensityNode(d1); 
+        node_s *n2 = makeDensityNode(d2); 
+        node_s *n3 = makeDensityNode(d3); 
+        node_s *n4 = makeOperatorNode(n1,n2,op1);
+        node_s *n5 = makeOperatorNode(n3,n1,op2);
+        node_s *n6 = makeOperatorNode(n4,n5,op1);
+
+        std::cout << "val computed is " << evalNode(n6,1,2,3) << std::endl;
+
+        exit(0);
+
         //random
         srand(time(NULL));
 
@@ -63,7 +77,8 @@ int main(int argc, char** argv) {
 
         RenderRoot *root = new RenderRoot(); 
 
-        ParticleSystem<2> *system = new SimpleParticleSystem2D(1000u, 0.0001f);
+        ParticleSystem<2> *system = new SimpleParticleSystem2D(1000u, 0.001f);
+
         root->addChild("SPH_ParticleSystem", system);
         
         //Configure viewer
