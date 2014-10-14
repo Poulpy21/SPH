@@ -12,36 +12,36 @@
 #define __DEVICE__
 #endif
 
-extern "C" {
+enum NodeType {
+    OPERATOR,
+    DENSITY
+};
 
-    enum NodeType {
-        OPERATOR,
-        DENSITY
-    };
+typedef struct __align__(8) node {
+    NodeType nodeType;
+    struct node *left_child;
+    struct node *right_child;
+} node_s;
 
-    typedef struct __align__(8) node {
-        NodeType nodeType;
-        struct node *left_child;
-        struct node *right_child;
-    } node_s;
+typedef struct __align__(8) operator_node {
+    struct node node;
+    operatorFunction operatorFunc;
+} operator_node_s;
 
-    typedef struct __align__(8) operator_node {
-        struct node node;
-        operatorFunction operatorFunc;
-    } operator_node_s;
-    
-    typedef struct __align__(8) density_node {
-        struct node node;
-        densityFunction densityFunc;
-    } density_node_s;
+typedef struct __align__(8) density_node {
+    struct node node;
+    densityFunction densityFunc;
+} density_node_s;
 
-    typedef node_s* implicitTree;
+typedef node_s* implicitTree;
 
-    __HOST__ node_s* makeDensityNode(densityFunction f);
-    __HOST__ node_s* makeOperatorNode(node_s* left_child, node_s* right_child, operatorFunction f);
-   
-    __HOST__ __DEVICE__ float evalNode(node_s *tree, float x, float y, float z);
-}
+__HOST__ node_s* makeDensityNode(densityFunction f);
+__HOST__ node_s* makeOperatorNode(node_s* left_child, node_s* right_child, operatorFunction f);
+__HOST__ node_s* makeDeviceTreeFromHost(node_s *tree_h);
+
+__HOST__ __DEVICE__ float evalNode(node_s *tree, float x, float y, float z);
+
+__HOST__ void computeTestKernel(float *x, float *y, float *z, float *res, node_s *tree);
 
 #undef __HOST__
 #undef __DEVICE__

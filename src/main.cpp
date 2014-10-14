@@ -23,7 +23,9 @@
 using namespace log4cpp;
 
 int main(int argc, char** argv) {
-        
+
+        cudaFree(0);
+        initPointers();
         node_s *n1 = makeDensityNode(d1); 
         node_s *n2 = makeDensityNode(d2); 
         node_s *n3 = makeDensityNode(d3); 
@@ -31,7 +33,38 @@ int main(int argc, char** argv) {
         node_s *n5 = makeOperatorNode(n3,n1,op2);
         node_s *n6 = makeOperatorNode(n4,n5,op1);
 
-        std::cout << "val computed is " << evalNode(n6,1,2,3) << std::endl;
+        node_s *n_d = makeDeviceTreeFromHost(n6);
+
+        float* X_h[3];
+        float* X_d[3];
+        float *res_h, *res_d;
+
+        for (unsigned int i = 0u; i < 3u; i++) {
+            X_h[i] = new float[10];
+            cudaMalloc(X_d+i, 10*sizeof(float));
+            for (unsigned j = 0; j < 10; j++) {
+                X_h[i][j] = j/10.0;
+            }
+            cudaMemcpy(X_d[i],X_h[i],10*sizeof(float),cudaMemcpyHostToDevice);
+        }
+    
+        res_h = new float[1000];
+        cudaMalloc(&res_d, 1000*sizeof(float));
+        
+        //kernel
+        computeTestKernel(X_h[0],X_h[1],X_h[2],res_d,n_d);
+        
+        //copy back
+        cudaMemcpy(res_h,res_d,1000*sizeof(float),cudaMemcpyDeviceToHost);
+
+        //print
+        for (unsigned int i = 0; i < 1000; i++) {
+            if(i%10==0) std::cout << std::endl;            
+            if(i>=100) break;
+            std::cout << "\t" << res_h[i];
+        }
+
+        std::cout << "val computed is " << evalNode(n6,1,1,0) << std::endl;
 
         exit(0);
 

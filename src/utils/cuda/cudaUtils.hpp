@@ -3,15 +3,19 @@
 #define _CUDA_UTILS_
 
 #include <iostream>
-#include <log4cpp/Category.hh>
 #include "cuda.h"
 #include "cuda_runtime.h"
 
+#define CHECK_CUDA_ERRORS(ans) { gpuAssert((ans), __FILE__, __LINE__); }
+void gpuAssert(cudaError_t code, const std::string &file, int line, bool abort = true);
+void checkKernelExecution();
+
+#ifndef __CUDACC__
+
+#include <log4cpp/Category.hh>
 #include "log.hpp"
 
 using namespace log4cpp;
-
-#define CHECK_CUDA_ERRORS(ans) { gpuAssert((ans), __FILE__, __LINE__); }
 
 class CudaUtils {
 
@@ -21,7 +25,6 @@ class CudaUtils {
 		
 };
 
-void gpuAssert(cudaError_t code, const std::string &file, int line, bool abort = true);
-void checkKernelExecution();
+#endif
 
 #endif
