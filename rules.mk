@@ -7,6 +7,7 @@ subdirs = $(shell find $1 -type d)
 # Règles
 
 debug: CXXFLAGS += $(DEBUGFLAGS)
+debug: NVCCFLAGS += $(CUDADEBUGFLAGS)
 ifeq ($(LINK), NVCC)
 debug: LINKFLAGS = $(CUDADEBUGFLAGS) 
 else
@@ -19,12 +20,10 @@ profile: CFLAGS += $(PROFILINGFLAGS)
 profile: CXXFLAGS += $(PROFILINGFLAGS)
 profile: all
 
-ifeq ($(LINK), NVCC)
-else
 release: LINKFLAGS += $(RELEASEFLAGS)
-endif
 release: CFLAGS += $(RELEASEFLAGS)
 release: CXXFLAGS += $(RELEASEFLAGS)
+release: NVCCFLAGS += $(RELEASEFLAGS)
 release: all
 
 all: create_dirs $(TARGET)

@@ -57,11 +57,11 @@ CXXFLAGS= -W -Wall -Wextra -Wno-unused-parameter -pedantic -std=c++0x -m64
 MOC=moc
 MOCFLAGS=
 
-NVCCFLAGS= -Xcompiler -Wall -m64 -arch sm_$(NARCH) -O3
+NVCCFLAGS= -Xcompiler -Wall -m64 -arch sm_$(NARCH)
 
 # Autres flags
 DEBUGFLAGS= -g -O0
-CUDADEBUGFLAGS= -Xcompiler -Wall -m64 -G -g -arch sm_$(NARCH) -Xptxas="-v"
+CUDADEBUGFLAGS= -G -g -Xptxas="-v"
 PROFILINGFLAGS= -pg
 RELEASEFLAGS= -O3
 
