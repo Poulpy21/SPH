@@ -55,47 +55,47 @@ void CudaUtils::logCudaDevices(log4cpp::Category &log_output) {
 
 	cudaGetDeviceCount(&nDevices);
 	char buffer[100];
-	log_output.infoStream() << "==== CUDA DEVICES ====";
-	log_output.infoStream() << "Found " << nDevices << " devices !";
+	log_output.debugStream() << "==== CUDA DEVICES ====";
+	log_output.debugStream() << "Found " << nDevices << " devices !";
 	for (int i = 0; i < nDevices; i++) {
 		cudaDeviceProp prop;
 		cudaGetDeviceProperties(&prop, i);
-		log_output.infoStream() << "Device Number: " << i;
-		log_output.infoStream() << "\tDevice name:                   "  << prop.name;
-		log_output.infoStream() << "\tPCI Device:                    " 
+		log_output.debugStream() << "Device Number: " << i;
+		log_output.debugStream() << "\tDevice name:                   "  << prop.name;
+		log_output.debugStream() << "\tPCI Device:                    " 
 			<< prop.pciBusID << ":" << prop.pciDeviceID << ":" << prop.pciDomainID;
-		log_output.infoStream() << "\tMajor revision number:         " << prop.major;
-		log_output.infoStream() << "\tMinor revision number:         " <<   prop.minor;
-		log_output.infoStream() << "\tMemory Clock Rate :            " << prop.memoryClockRate/1000 << " MHz";
-		log_output.infoStream() << "\tMemory Bus Width:              " << prop.memoryBusWidth << " bits";
-		log_output.infoStream() << "\tPeak Memory Bandwidth:         " 
+		log_output.debugStream() << "\tMajor revision number:         " << prop.major;
+		log_output.debugStream() << "\tMinor revision number:         " <<   prop.minor;
+		log_output.debugStream() << "\tMemory Clock Rate :            " << prop.memoryClockRate/1000 << " MHz";
+		log_output.debugStream() << "\tMemory Bus Width:              " << prop.memoryBusWidth << " bits";
+		log_output.debugStream() << "\tPeak Memory Bandwidth:         " 
 			<< 2.0*prop.memoryClockRate*(prop.memoryBusWidth/8)/1.0e6 << " GB/s";
-		log_output.infoStream() << "\tTotal global memory:           " <<   prop.totalGlobalMem/(1024*1024) << " MB";
-		log_output.infoStream() << "\tTotal shared memory per block: " <<   prop.sharedMemPerBlock/1024 << " kB";
-		log_output.infoStream() << "\tTotal registers per block:     " <<   prop.regsPerBlock/1024 << " kB";
-		log_output.infoStream() << "\tTotal constant memory:         " <<   prop.totalConstMem/1024 << " kB";
-		log_output.infoStream() << "\tMaximum memory pitch:          " <<   prop.memPitch/(1024*1024) << " MB";
-		log_output.infoStream() << "\tNumber of multiprocessors:     " <<   prop.multiProcessorCount;
-		log_output.infoStream() << "\tMaximum threads per SM:        " <<   prop.maxThreadsPerMultiProcessor;
-		log_output.infoStream() << "\tMaximum threads per block:     " <<   prop.maxThreadsPerBlock;
+		log_output.debugStream() << "\tTotal global memory:           " <<   prop.totalGlobalMem/(1024*1024) << " MB";
+		log_output.debugStream() << "\tTotal shared memory per block: " <<   prop.sharedMemPerBlock/1024 << " kB";
+		log_output.debugStream() << "\tTotal registers per block:     " <<   prop.regsPerBlock/1024 << " kB";
+		log_output.debugStream() << "\tTotal constant memory:         " <<   prop.totalConstMem/1024 << " kB";
+		log_output.debugStream() << "\tMaximum memory pitch:          " <<   prop.memPitch/(1024*1024) << " MB";
+		log_output.debugStream() << "\tNumber of multiprocessors:     " <<   prop.multiProcessorCount;
+		log_output.debugStream() << "\tMaximum threads per SM:        " <<   prop.maxThreadsPerMultiProcessor;
+		log_output.debugStream() << "\tMaximum threads per block:     " <<   prop.maxThreadsPerBlock;
 
 		sprintf(buffer, "%ix%ix%i", prop.maxThreadsDim[0], prop.maxThreadsDim[1], prop.maxThreadsDim[2]);
-		log_output.infoStream() << "\tMaximum thread block dimension " <<  buffer;
+		log_output.debugStream() << "\tMaximum thread block dimension " <<  buffer;
 		sprintf(buffer, "%ix%ix%i", prop.maxGridSize[0], prop.maxGridSize[1], prop.maxGridSize[2]);
-		log_output.infoStream() << "\tMaximum grid dimension         " <<  buffer;
-		log_output.infoStream() << "\tWarp size:                     " <<   prop.warpSize;
-		log_output.infoStream() << "\tTexture alignment:             " <<   prop.textureAlignment;
-		log_output.infoStream() << "\tTexture picth alignment:       " <<   prop.texturePitchAlignment;
-		log_output.infoStream() << "\tSurface alignment:             " <<   prop.surfaceAlignment;
-		log_output.infoStream() << "\tConcurrent copy and execution: " <<   (prop.deviceOverlap ? "Yes" : "No");
-		log_output.infoStream() << "\tKernel execution timeout:      " <<   (prop.kernelExecTimeoutEnabled ?"Yes" : "No");
-		log_output.infoStream() << "\tDevice has ECC support:        " <<   (prop.ECCEnabled ?"Yes" : "No");
-		log_output.infoStream() << "\tCompute mode:                  " 
+		log_output.debugStream() << "\tMaximum grid dimension         " <<  buffer;
+		log_output.debugStream() << "\tWarp size:                     " <<   prop.warpSize;
+		log_output.debugStream() << "\tTexture alignment:             " <<   prop.textureAlignment;
+		log_output.debugStream() << "\tTexture picth alignment:       " <<   prop.texturePitchAlignment;
+		log_output.debugStream() << "\tSurface alignment:             " <<   prop.surfaceAlignment;
+		log_output.debugStream() << "\tConcurrent copy and execution: " <<   (prop.deviceOverlap ? "Yes" : "No");
+		log_output.debugStream() << "\tKernel execution timeout:      " <<   (prop.kernelExecTimeoutEnabled ?"Yes" : "No");
+		log_output.debugStream() << "\tDevice has ECC support:        " <<   (prop.ECCEnabled ?"Yes" : "No");
+		log_output.debugStream() << "\tCompute mode:                  " 
 			<<   (prop.computeMode == 0 ? "Default" : prop.computeMode == 1 ? "Exclusive" :
 					prop.computeMode == 2 ? "Prohibited" : "Exlusive Process");
 	}
 
-	log_output.infoStream() << "======================";
+	log_output.debugStream() << "======================";
 }
 
 

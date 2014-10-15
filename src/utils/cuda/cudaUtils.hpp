@@ -6,7 +6,6 @@
 #include "cuda.h"
 #include "cuda_runtime.h"
 
-#define CHECK_CUDA_ERRORS(ans) { gpuAssert((ans), __FILE__, __LINE__); }
 void gpuAssert(cudaError_t code, const std::string &file, int line, bool abort = true);
 void checkKernelExecution();
 

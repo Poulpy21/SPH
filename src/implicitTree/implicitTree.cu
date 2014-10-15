@@ -1,10 +1,14 @@
 
+#include "defines.hpp"
 #include "implicitTree.h"
 #include <cassert>
 #include <cstdio>
 #include <map>
 
 __device__ __host__ float evalNode(node_s *tree, float x, float y, float z) {
+    if(tree == NULL)
+        return 0.0f;
+        
     if(tree->nodeType == OPERATOR) {
         operator_node_s* operator_node = (operator_node_s*) tree;
         return (operator_node->operatorFunc)(
@@ -85,13 +89,13 @@ __host__ unsigned int buildDeviceTree(node_s *node_h, operator_node_s *node_d) {
         func = (operatorFunction)densityFunctionPointers[ds_node_h->densityFunc];
     }
     
-    printf("Creating node %p (type=%i,l=%p,r=%p,func=%p)\n", node_d, node_h->nodeType, leftChild, rightChild,func); 
+    PRINTD("Creating node %p (type=%i,l=%p,r=%p,func=%p)\n", node_d, node_h->nodeType, leftChild, rightChild,func); 
     
     initNode(node_d, node_h->nodeType, (node_s*)leftChild, (node_s*)rightChild, func);
 
     operator_node_s testNode;
     cudaMemcpy(&testNode, node_d, sizeof(operator_node_s), cudaMemcpyDeviceToHost);
-    printf("Got node \t\t(type=%i,l=%p,r=%p,func=%p)\n", testNode.node.nodeType, testNode.node.left_child, testNode.node.right_child,testNode.operatorFunc); 
+    PRINTD("Got node \t\t(type=%i,l=%p,r=%p,func=%p)\n", testNode.node.nodeType, testNode.node.left_child, testNode.node.right_child,testNode.operatorFunc); 
 
     
     return offset;
@@ -101,7 +105,7 @@ __host__ node_s* makeDeviceTreeFromHost(node_s *tree_h) {
 
     assert(sizeof(operatorFunction) == sizeof(densityFunction));
     const unsigned int nNode = countNodes(tree_h);
-    printf("There are %i nodes !\n", nNode);
+    PRINTD("There are %i nodes !\n", nNode);
     operator_node_s *data_d;
     
     cudaMalloc(&data_d, nNode*sizeof(operator_node_s));

@@ -2,6 +2,7 @@
 #include "implicitFunc.h"
 #include <cstdio>
 #include <cassert>
+#include "defines.hpp"
 #include "cudaUtils.hpp"
 
 __device__ __host__ float d1(float x, float y, float z) { return x; }
@@ -36,7 +37,7 @@ __host__ void initPointers() {
     //densities
     densityFunction density_functions_p_d_h[nDensityFunctions] = {d1,d2,d3};
 
-    printf("Init pointers kernel :\n");
+    PRINTD("Init pointers kernel :\n");
     initPointersKernel<<<1,1>>>();
     checkKernelExecution();
 
@@ -46,12 +47,12 @@ __host__ void initPointers() {
                 nDensityFunctions*sizeof(densityFunction),
                 0,cudaMemcpyDeviceToHost));
    
-    printf("Densities :\n");
+    PRINTD("Densities :\n");
     for (unsigned int i = 0u; i < nDensityFunctions; i++) {
         densityFunctionPointers.insert(
                 std::pair<densityFunction,densityFunction>(density_functions_p_h[i], density_functions_p_d_h[i])
                 );        
-        printf("\tDensity %i: %p \t %p\n", i, density_functions_p_h[i], density_functions_p_d_h[i]);
+        PRINTD("\tDensity %i: %p \t %p\n", i, density_functions_p_h[i], density_functions_p_d_h[i]);
     }
    
     //operators
@@ -62,11 +63,11 @@ __host__ void initPointers() {
                 nOperatorFunctions*sizeof(operatorFunction),
                 0,cudaMemcpyDeviceToHost));
     
-    printf("Operators :\n");
+    PRINTD("Operators :\n");
     for (unsigned int i = 0u; i < nOperatorFunctions; i++) {
         operatorFunctionPointers.insert(
                 std::pair<operatorFunction,operatorFunction>(operator_functions_p_h[i], operator_functions_p_d_h[i])
                 );        
-        printf("\tOperator %i: %p \t %p\n", i, operator_functions_p_h[i], operator_functions_p_d_h[i]);
+        PRINTD("\tOperator %i: %p \t %p\n", i, operator_functions_p_h[i], operator_functions_p_d_h[i]);
     }
 }

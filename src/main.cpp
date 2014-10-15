@@ -1,5 +1,6 @@
 
 #include "headers.hpp"
+#include "defines.hpp"
 
 #include <cstdlib>
 #include <cassert>
@@ -30,11 +31,14 @@ int main(int argc, char** argv) {
         node_s *n2 = makeDensityNode(d2); 
         node_s *n3 = makeDensityNode(d3); 
         node_s *n4 = makeOperatorNode(n1,n2,op1);
-        node_s *n5 = makeOperatorNode(n3,n1,op2);
-        node_s *n6 = makeOperatorNode(n4,n5,op1);
+        node_s *n5 = makeOperatorNode(n1,n3,op2);
+        node_s *n6 = makeOperatorNode(n2,n3,op1);
+        node_s *n7 = makeOperatorNode(n4,n5,op1);
+        node_s *n8 = makeOperatorNode(n4,n6,op2);
+        node_s *n9 = makeOperatorNode(n7,n8,op1);
 
-        node_s *n_d = makeDeviceTreeFromHost(n4);
-        node_s *n_h = n4;
+        node_s *n_d = makeDeviceTreeFromHost(n9);
+        node_s *n_h = n9;
 
         float* X_h[3];
         float* X_d[3];
@@ -73,19 +77,19 @@ int main(int argc, char** argv) {
             std::cout << "\t" << res_h[i];
         }
 
-        exit(0);
 
-        //random
-        srand(time(NULL));
 
         //logs
         log4cpp::initLogs();
+        log_console->infoStream() << "[Logs Init] ";
+        
+        //random
+        srand(time(NULL));
+        log_console->infoStream() << "[Rand Init] ";
 
         //cuda
+        log_console->infoStream() << "[CUDA Init] ";
         CudaUtils::logCudaDevices(*log_console);
-
-        log_console->infoStream() << "[Rand Init] ";
-        log_console->infoStream() << "[Logs Init] ";
 
         // glut initialisation (mandatory) 
         glutInit(&argc, argv);
@@ -96,6 +100,7 @@ int main(int argc, char** argv) {
         log_console->infoStream() << "[Qt Init] ";
 
         // Instantiate the viewer (mandatory)
+        log_console->infoStream() << "[Viewer Init] ";
         Viewer *viewer = new Viewer();
         viewer->setWindowTitle("SPH");
         viewer->show();
@@ -105,14 +110,20 @@ int main(int argc, char** argv) {
 
         //global vars
         Globals::init();
+#ifdef __DEBUG
         Globals::print(std::cout);
+#endif
         Globals::check();
         Globals::viewer = viewer;
 
         //texture manager
         Texture::init();
 
+        log_console->infoStream() << "";
+        log_console->infoStream() << "";
         log_console->infoStream() << "Running with OpenGL " << Globals::glVersion << " and glsl version " << Globals::glShadingLanguageVersion << " !";
+        
+        exit(0);
         //FIN INIT//
 
         RenderRoot *root = new RenderRoot(); 

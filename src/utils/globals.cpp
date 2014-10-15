@@ -57,7 +57,7 @@ void Globals::init() {
         glBufferData(GL_UNIFORM_BUFFER, (16+16+4+4+4+4)*sizeof(GLfloat), 0, GL_DYNAMIC_DRAW);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-        log_console->infoStream() << "[Global Vars Init]";
+        log_console->infoStream() << "[Globals init]";
 }
 
 void Globals::check() {

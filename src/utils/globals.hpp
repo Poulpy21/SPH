@@ -47,7 +47,7 @@ class Globals {
 		static Viewer *viewer;
 		static unsigned int projectionViewUniformBlock;
 
-        // Diver
+        // Current position
         static float dt;
         static Vec pos;
         static Vec offset;
