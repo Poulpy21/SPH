@@ -1,6 +1,7 @@
 
 #include "implicitTree.h"
 #include <cassert>
+#include <cstdio>
 #include <map>
 
 __device__ __host__ float evalNode(node_s *tree, float x, float y, float z) {
@@ -44,6 +45,11 @@ __host__ unsigned int countNode(node_s *tree_h) {
 
 __host__ unsigned int buildDeviceTree(node_s *node_h, operator_node_s *node_d) {
 
+    printf("Building device tree !\n");
+    printf("Sizeof(node_s) is %i bytes.\n",sizeof(node_s));
+    printf("Sizeof(func) is %i bytes.\n",sizeof(operatorFunction)); 
+    printf("Sizeof(operator_node_s) is %i bytes.\n",sizeof(operator_node_s)); 
+
     //check if node exists
     if(node_h == NULL)
         return 0u;
@@ -54,6 +60,8 @@ __host__ unsigned int buildDeviceTree(node_s *node_h, operator_node_s *node_d) {
     //clone function pointer
     if(node_h->nodeType == OPERATOR) {
         operator_node_s* dnode_h = (operator_node_s*) node_h;
+        printf("Processing operator with host func %p => device %p, from host node %p to device node %p !\n",
+                dnode_h->operatorFunc, operatorFunctionPointers[dnode_h->operatorFunc], node_h, node_d);
         assert(operatorFunctionPointers.find(dnode_h->operatorFunc) != operatorFunctionPointers.end());
         cudaMemcpy((unsigned char*)(node_d)+sizeof(node_s), 
                 (void*)operatorFunctionPointers[dnode_h->operatorFunc],
@@ -80,6 +88,7 @@ __host__ node_s* makeDeviceTreeFromHost(node_s *tree_h) {
    
     assert(sizeof(operator_node_s) == sizeof(density_node_s));
     const unsigned int nNode = countNode(tree_h);
+    printf("There are %i nodes !\n", nNode);
     operator_node_s *data_d;
     
     cudaMalloc(&data_d, nNode*sizeof(operator_node_s));
