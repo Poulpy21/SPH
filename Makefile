@@ -25,7 +25,7 @@ VIEWER_DEFINES = -D_REENTRANT -DQT_NO_DEBUG -DQT_XML_LIB -DQT_OPENGL_LIB -DQT_GU
 
 CUDA_INCLUDEPATH = -I/usr/local/cuda/include
 CUDA_LIBPATH = -L/usr/local/cuda/lib64 -L/usr/local/cuda/lib
-CUDA_LIBS = -lcuda -lcudart
+CUDA_LIBS = -lcuda -lcudart -lcudadevrt
 
 NVCC=nvcc
 
@@ -42,8 +42,7 @@ endif
 ###############################################################
 
 #Compilateurs
-LINK= g++
-LINKFLAGS= -W -Wall -Wextra -pedantic -std=c++0x
+LINK= nvcc
 LDFLAGS= $(L_QGLVIEWER) $(VIEWER_LIBS) -llog4cpp $(CUDA_LIBS) $(OPENAL_LIBS)
 INCLUDE = -Ilocal/include/ -I$(SRCDIR) $(foreach dir, $(call subdirs, $(SRCDIR)), -I$(dir)) $(VIEWER_INCLUDEPATH) $(CUDA_INCLUDEPATH) $(OPENAl_INCLUDEPATH)
 LIBS = -Llocal/lib/ $(VIEWER_LIBPATH) $(CUDA_LIBPATH) $(OPENAL_LIBPATH)
@@ -52,7 +51,13 @@ DEFINES= $(VIEWER_DEFINES) $(OPT)
 CXX=g++
 CXXFLAGS= -W -Wall -Wextra -Wno-unused-parameter -pedantic -std=c++0x -m64
 #-Wshadow -Wstrict-aliasing -Weffc++ -Werror
-NVCCFLAGS= -Xcompiler -Wall -m64 -arch sm_$(NARCH)
+NVCCFLAGS= -Xcompiler -Wall -m64 -arch sm_$(NARCH) --relocatable-device-code true
+
+ifeq ($(LINK), nvcc)
+LINKFLAGS=$(NVCCFLAGS)
+else
+LINKFLAGS=$(CXXFLAGS)
+endif
 
 #preprocesseur QT
 MOC=moc

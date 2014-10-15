@@ -33,7 +33,8 @@ int main(int argc, char** argv) {
         node_s *n5 = makeOperatorNode(n3,n1,op2);
         node_s *n6 = makeOperatorNode(n4,n5,op1);
 
-        node_s *n_d = makeDeviceTreeFromHost(n6);
+        node_s *n_d = makeDeviceTreeFromHost(n4);
+        node_s *n_h = n4;
 
         float* X_h[3];
         float* X_d[3];
@@ -50,9 +51,16 @@ int main(int argc, char** argv) {
     
         res_h = new float[1000];
         CHECK_CUDA_ERRORS(cudaMalloc(&res_d, 1000*sizeof(float)));
-        
+       
+        //cpu side
+        for (unsigned int i = 0; i < 1000; i++) {
+            if(i%10==0) std::cout << std::endl;            
+            if(i>=100) break;
+            std::cout << "\t" << evalNode(n_h,(i%10)/10.0f, ((i/10)%10)/10.0f, (i/100)/10.0f);
+        }
+
         //kernel
-        computeTestKernel(X_h[0],X_h[1],X_h[2],res_d,n_d);
+        computeTestKernel(X_d[0],X_d[1],X_d[2],res_d,n_d);
         checkKernelExecution();
         
         //copy back
@@ -64,8 +72,6 @@ int main(int argc, char** argv) {
             if(i>=100) break;
             std::cout << "\t" << res_h[i];
         }
-
-        std::cout << "val computed is " << evalNode(n6,1,1,0) << std::endl;
 
         exit(0);
 

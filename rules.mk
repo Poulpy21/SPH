@@ -8,7 +8,7 @@ subdirs = $(shell find $1 -type d)
 
 debug: CXXFLAGS += $(DEBUGFLAGS)
 debug: NVCCFLAGS += $(CUDADEBUGFLAGS)
-ifeq ($(LINK), NVCC)
+ifeq ($(LINK), nvcc)
 debug: LINKFLAGS = $(CUDADEBUGFLAGS) 
 else
 debug: LINKFLAGS = $(DEBUGFLAGS) 
