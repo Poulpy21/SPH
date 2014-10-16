@@ -18,8 +18,10 @@
 #include "implicitTree.h"
 #include "implicitFunc.h"
 
+#include "renderRoot.hpp"
 
 #include "simpleParticleSystem2D.hpp"
+#include "marchingCubes.hpp"
 
 using namespace log4cpp;
 
@@ -120,27 +122,26 @@ int main(int argc, char** argv) {
         Texture::init();
 
         log_console->infoStream() << "";
-        log_console->infoStream() << "";
         log_console->infoStream() << "Running with OpenGL " << Globals::glVersion << " and glsl version " << Globals::glShadingLanguageVersion << " !";
+        log_console->infoStream() << "";
         
-        exit(0);
         //FIN INIT//
 
         RenderRoot *root = new RenderRoot(); 
-
-        ParticleSystem<2> *system = new SimpleParticleSystem2D(1000u, 0.001f);
-
-        root->addChild("SPH_ParticleSystem", system);
-        
-        //Configure viewer
         viewer->addRenderable(root);
 
+        MarchingCubes::MarchingCubes *MC = new MarchingCubes::MarchingCubes(0.0f,0.0f,0.0f,256u,256u,256u,0.1f);
+        root->addChild("Marching Cube", MC);
+        
         //Run main loop.
         application.exec();
 
         //Exit
         alutExit();
-
+        
         return EXIT_SUCCESS;
+
+        ParticleSystem<2> *system = new SimpleParticleSystem2D(1000u, 0.001f);
+        root->addChild("SPH_ParticleSystem", system);
 }
 

@@ -2,6 +2,8 @@
 #include "headers.hpp"
 #include <QGLWidget>
 
+#include "glUtils.hpp"
+#include "defines.hpp"
 #include "texture3D.hpp"
 #include "log.hpp"
 #include "globals.hpp"
@@ -33,22 +35,26 @@ void Texture3D::bindAndApplyParameters(unsigned int location) {
 
 	glActiveTexture(GL_TEXTURE0 + location);
 	glBindTexture(textureType, textureId);
+    CHECK_OPENGL_ERRORS();
 
 	log_console->infoStream() << logTextureHead << "Bind 3D TEXTURE [id=" 
 		<< textureId << "] to texture location " << location << ".";
 
 	glTexImage3D(GL_TEXTURE_3D, 0, _internalFormat, _width, _height, _length, 0,
 			_sourceFormat, _sourceType, _texels);
+    CHECK_OPENGL_ERRORS();
 
 	log_console->infoStream() << logTextureHead << "Updated texture data !"; 
 
 	log_console->infoStream() << logTextureHead << "Applying " << params.size() << " parameters !";
 
 	applyParameters();
+    CHECK_OPENGL_ERRORS();
 
 	if(mipmap) {
 		glGenerateMipmap(textureType);
 		log_console->infoStream() << logTextureHead << "Generating mipmap !";
+        CHECK_OPENGL_ERRORS();
 	}
 
 	lastKnownLocation = location;

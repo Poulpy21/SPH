@@ -26,4 +26,4 @@ do {\
 
 #define CHECK_CUDA_ERRORS(ans) { gpuAssert((ans), __FILE__, __LINE__); }
 #define CHECK_KERNEL_EXECUTION() { checkKernelExecution(); }
-#define CHECK_OPENGL_ERRORS() { glAssert( __FILE__, __LINE__); }
+#define CHECK_OPENGL_ERRORS() { utils::glAssert( __FILE__, __LINE__); }

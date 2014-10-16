@@ -41,18 +41,18 @@ $(SRCDIR)%.moc : $(SRCDIR)%.hpp
 ################
 
 
-$(OBJDIR)%.o : $(SRCDIR)%.C 
+$(OBJDIR)%.C.o : $(SRCDIR)%.C 
 	$(CXX) $(INCLUDE) -o $@ -c $^ $(CXXFLAGS) $(DEFINES)
 	@echo
-$(OBJDIR)%.o : $(SRCDIR)%.cc 
+$(OBJDIR)%.cc.o : $(SRCDIR)%.cc 
 	$(CXX) $(INCLUDE) -o $@ -c $^ $(CXXFLAGS) $(DEFINES)
 	@echo
-$(OBJDIR)%.o : $(SRCDIR)%.cpp 
+$(OBJDIR)%.cpp.o : $(SRCDIR)%.cpp 
 	$(CXX) $(INCLUDE) -o $@ -c $^ $(CXXFLAGS) $(DEFINES)
 	@echo
 
 
-$(OBJDIR)%.o: $(SRCDIR)%.cu 
+$(OBJDIR)%.cu.o: $(SRCDIR)%.cu 
 	@echo
 	$(NVCC) $(INCLUDE) -o $@ -c $^ $(NVCCFLAGS) $(DEFINES)
 

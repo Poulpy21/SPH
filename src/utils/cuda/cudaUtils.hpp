@@ -6,6 +6,9 @@
 #include "cuda.h"
 #include "cuda_runtime.h"
 
+
+typedef struct cudaArray* cudaArray_t;
+
 void gpuAssert(cudaError_t code, const std::string &file, int line, bool abort = true);
 void checkKernelExecution();
 

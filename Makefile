@@ -84,6 +84,6 @@ WEXT = $(addprefix *., $(SRC_EXTENSIONS))
 MOCSRC = $(shell grep -rlw $(SRCDIR)/ -e 'Q_OBJECT' --include=*.h | xargs) #need QT preprocessor
 MOCOUTPUT = $(addsuffix .moc, $(basename $(MOCSRC)))
 SRC = $(foreach DIR, $(SUBDIRS), $(foreach EXT, $(WEXT), $(wildcard $(DIR)/$(EXT))))
-OBJ = $(subst $(SRCDIR), $(OBJDIR), $(addsuffix .o, $(basename $(SRC))))
+OBJ = $(subst $(SRCDIR), $(OBJDIR), $(addsuffix .o, $(SRC)))
 
 include rules.mk
