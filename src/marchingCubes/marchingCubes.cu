@@ -9,18 +9,13 @@
 
 namespace MarchingCubes {
 
-    surface<void, cudaSurfaceType3D> densitiesSurface;
-    surface<void, cudaSurfaceType3D> normalsSurface;
 
-    __host__ void bindSurfaces(const cudaArray_t densitiesArray, const cudaArray_t normalsArray) {
-        CHECK_CUDA_ERRORS(cudaBindSurfaceToArray(densitiesSurface, densitiesArray));
-        CHECK_CUDA_ERRORS(cudaBindSurfaceToArray(normalsSurface, normalsArray));
-    }
     __global__ void 
     __launch_bounds__(512)
     computeDensitiesKernel(float x0, float y0, float z0,
             unsigned int W, unsigned int H, unsigned int L, 
-            float h) {
+            float h,
+            cudaSurfaceObject_t densitiesSurface) {
         
         unsigned int ix = blockIdx.x * blockDim.x + threadIdx.x;
         unsigned int iy = blockIdx.y * blockDim.y + threadIdx.y;
@@ -29,13 +24,14 @@ namespace MarchingCubes {
         if(ix >= W || iy >= H || iz >= L)
             return;
 
-        surf3Dwrite(h, densitiesSurface, ix*sizeof(float), iy, iz);
+        surf3Dwrite((short)(21.21), densitiesSurface, ix*sizeof(float), iy, iz, cudaBoundaryModeZero);
     }
 
     __host__ void callComputeDensitiesKernel(
-            float x0, float y0, float z0,
-            unsigned int W, unsigned int H, unsigned int L, 
-            float h) {
+        float x0, float y0, float z0,
+        unsigned int W, unsigned int H, unsigned int L, 
+        float h, 
+        cudaSurfaceObject_t densitiesSurface) {
        
         dim3 blockDim(8,8,8);
         dim3 gridDim(
@@ -44,10 +40,7 @@ namespace MarchingCubes {
                 (L+blockDim.z-1)/blockDim.z);
 
 
-        printf("ProbDim : (%i,%i,%i)\n", W, H, L); 
-        printf("BlockDim : (%i,%i,%i)\n", blockDim.x, blockDim.y, blockDim.z); 
-        printf("GridDim : (%i,%i,%i)\n", gridDim.x, gridDim.y, gridDim.z); 
-        computeDensitiesKernel<<<gridDim,blockDim>>>(x0,y0,z0,W,H,L,h);
+        computeDensitiesKernel<<<gridDim,blockDim,0>>>(x0,y0,z0,W,H,L,h,densitiesSurface);
         CHECK_KERNEL_EXECUTION();
     }
 }

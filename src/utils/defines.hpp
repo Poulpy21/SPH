@@ -6,7 +6,7 @@
 #endif
 
 #ifndef __DEBUG_LEVEL 
-#define __DEBUG_LEVEL 0
+#define __DEBUG_LEVEL 1
 #endif
 
 #define PRINTD(...) \

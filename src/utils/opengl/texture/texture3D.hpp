@@ -13,7 +13,7 @@ class Texture3D : public Texture {
 
 	public: 
 		Texture3D(unsigned int width, unsigned int height, unsigned int length,
-				GLint internalFormat, 
+				GLint internalFormat,  // !!! SPECIFY NUMBER OF BYTES TO THE DRIVER !!! (GL_RED => GL_R32F)
 				void *sourceData=0, GLenum sourceFormat=0, GLenum sourceType=0);
 
 		virtual ~Texture3D();

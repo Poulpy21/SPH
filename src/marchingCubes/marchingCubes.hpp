@@ -42,8 +42,10 @@ namespace MarchingCubes {
 
 
             //3D Textures
-            Texture3D *_densities, *_normals;
+            unsigned int _densitiesPBO, _normalsPBO;
+            Texture3D *_densitiesTexture, *_normalsTexture;
             cudaArray_t _densitiesArray, _normalsArray;
+            cudaSurfaceObject_t _densitiesSurface, _normalsSurface;
 
             static const unsigned int _nRessources = 2;
             cudaGraphicsResource_t _graphicResources[_nRessources];
@@ -54,7 +56,8 @@ namespace MarchingCubes {
     
     extern void callComputeDensitiesKernel(float x0, float y0, float z0,
             unsigned int W, unsigned int H, unsigned int L, 
-            float h);
+            float h, 
+            cudaSurfaceObject_t densitiesSurface);
 
     //extern void computeTrianglesKernel();
 }
