@@ -1,27 +1,27 @@
 
 //le flag debug est passé avec make debug mais on le met
 //par defaut pour le moment
-#ifndef __DEBUG
-#define __DEBUG
+#ifndef _DEBUG
+#define _DEBUG
 #endif
 
-#ifndef __DEBUG_LEVEL 
-#define __DEBUG_LEVEL 1
+#ifndef _DEBUG_LEVEL 
+#define _DEBUG_LEVEL 1
 #endif
 
 #define PRINTD(...) \
 do {\
-    if(__DEBUG_LEVEL > 0)\
+    if(_DEBUG_LEVEL > 0)\
         printf(__VA_ARGS__);\
 } while(0)
 
 //tout passe en DEBUG avec make debug
-#ifndef __CONSOLE_LOG_LEVEL
-#define __CONSOLE_LOG_LEVEL INFO
+#ifndef _CONSOLE_LOG_LEVEL
+#define _CONSOLE_LOG_LEVEL INFO
 #endif
 
-#ifndef __FILE_LOG_LEVEL
-#define __FILE_LOG_LEVEL DEBUG
+#ifndef _FILE_LOG_LEVEL
+#define _FILE_LOG_LEVEL DEBUG
 #endif
 
 #define CHECK_CUDA_ERRORS(ans) { gpuAssert((ans), __FILE__, __LINE__); }

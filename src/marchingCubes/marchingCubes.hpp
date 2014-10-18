@@ -42,10 +42,7 @@ namespace MarchingCubes {
 
 
             //3D Textures
-            unsigned int _densitiesPBO, _normalsPBO;
-            Texture3D *_densitiesTexture, *_normalsTexture;
-            cudaArray_t _densitiesArray, _normalsArray;
-            cudaSurfaceObject_t _densitiesSurface, _normalsSurface;
+            SharedSurfaceResource *densities, *textures;
 
             static const unsigned int _nRessources = 2;
             cudaGraphicsResource_t _graphicResources[_nRessources];

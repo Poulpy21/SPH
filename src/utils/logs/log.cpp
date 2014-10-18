@@ -21,8 +21,8 @@ namespace log4cpp {
 
 	void initLogs() {
 
-		log_console->setPriority(Priority::__CONSOLE_LOG_LEVEL);
-		log_file->setPriority(Priority::__FILE_LOG_LEVEL);
+		log_console->setPriority(Priority::_CONSOLE_LOG_LEVEL);
+		log_file->setPriority(Priority::_FILE_LOG_LEVEL);
 
 		log4cpp::Appender *appender_console = new log4cpp::OstreamAppender("console", &std::cout);
 		appender_console->setLayout(new log4cpp::BasicLayout());

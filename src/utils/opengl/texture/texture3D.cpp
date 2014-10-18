@@ -40,8 +40,8 @@ void Texture3D::bindAndApplyParameters(unsigned int location) {
 	log_console->infoStream() << logTextureHead << "Bind 3D TEXTURE [id=" 
 		<< textureId << "] to texture location " << location << ".";
 
-	glTexImage3D(GL_TEXTURE_3D, 0, _internalFormat, _width, _height, _length, 0,
-			_sourceFormat, _sourceType, _texels);
+    glTexImage3D(GL_TEXTURE_3D, 0, _internalFormat, _width, _height, _length, 0,
+            _sourceFormat, _sourceType, _texels);
     CHECK_OPENGL_ERRORS();
 
 	log_console->infoStream() << logTextureHead << "Updated texture data !"; 
@@ -56,6 +56,8 @@ void Texture3D::bindAndApplyParameters(unsigned int location) {
 		log_console->infoStream() << logTextureHead << "Generating mipmap !";
         CHECK_OPENGL_ERRORS();
 	}
+
+
 
 	lastKnownLocation = location;
 	textureLocations[location] = textureId;

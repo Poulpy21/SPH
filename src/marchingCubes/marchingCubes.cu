@@ -24,7 +24,8 @@ namespace MarchingCubes {
         if(ix >= W || iy >= H || iz >= L)
             return;
 
-        surf3Dwrite((short)(21.21), densitiesSurface, ix*sizeof(float), iy, iz, cudaBoundaryModeZero);
+        /*surf3Dwrite(__float2half_rn(0.5f), densitiesSurface, ix/2*sizeof(float), iy, iz, cudaBoundaryModeTrap);*/
+        surf3Dwrite(0.5f, densitiesSurface, ix*sizeof(float), iy, iz, cudaBoundaryModeTrap);
     }
 
     __host__ void callComputeDensitiesKernel(

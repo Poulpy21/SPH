@@ -55,7 +55,7 @@ namespace MarchingCubes {
         static float *vals = new float[_H*_W*_L];
         glBindTexture(GL_TEXTURE_3D, _densitiesTexture->getTextureId());
         glGetTexImage(GL_TEXTURE_3D, 
-                0, GL_RED, GL_SHORT, vals);
+                0, GL_RED, GL_FLOAT, vals);
         for (unsigned int i = 0; i < 10; i++) {
             printf("%f\t", vals[i]);
         }
@@ -83,12 +83,14 @@ namespace MarchingCubes {
     //CUDA OpenGL
     void MarchingCubes::allocateAndRegisterTextures() {
         //Create textures
+        //float *vals = new float[_H*_W*_L];
         unsigned int texturePBO = 0;
         glGenBuffers(1, &texturePBO);
         glBindBuffer(GL_PIXEL_UNPACK_BUFFER, texturePBO);
-        glBufferData(GL_PIXEL_UNPACK_BUFFER, _W*_H*_L*sizeof(short), NULL, GL_DYNAMIC_DRAW);
+        glBufferData(GL_PIXEL_UNPACK_BUFFER, _W*_H*_L*sizeof(float), 0, GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
-        _densitiesTexture = new Texture3D(_W,_H,_L,GL_R16F,0,GL_RED,GL_SHORT);
+        _densitiesTexture = new Texture3D(_W,_H,_L,GL_R32F,0,GL_RED,GL_FLOAT);
         _densitiesTexture->addParameter(Parameter(GL_TEXTURE_WRAP_S, GL_CLAMP));
         _densitiesTexture->addParameter(Parameter(GL_TEXTURE_WRAP_T, GL_CLAMP));
         _densitiesTexture->addParameter(Parameter(GL_TEXTURE_WRAP_R, GL_CLAMP));
@@ -96,10 +98,9 @@ namespace MarchingCubes {
         _densitiesTexture->addParameter(Parameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR));
         _densitiesTexture->bindAndApplyParameters(0);
         
-        glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
         CHECK_OPENGL_ERRORS();
         
-        _normalsTexture = new Texture3D(_W,_H,_L,GL_RGBA8I,NULL,GL_RGBA_INTEGER,GL_UNSIGNED_B  );
+        _normalsTexture = new Texture3D(_W,_H,_L,GL_RGBA8I,NULL,GL_RGBA_INTEGER,GL_UNSIGNED_BYTE);
         _normalsTexture->addParameters(_densitiesTexture->getParameters());
         _normalsTexture->bindAndApplyParameters(1);
         CHECK_OPENGL_ERRORS();
