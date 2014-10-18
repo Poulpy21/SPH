@@ -15,7 +15,8 @@ namespace MarchingCubes {
     computeDensitiesKernel(float x0, float y0, float z0,
             unsigned int W, unsigned int H, unsigned int L, 
             float h,
-            cudaSurfaceObject_t densitiesSurface) {
+            cudaSurfaceObject_t densitiesSurface, 
+            float t) {
         
         unsigned int ix = blockIdx.x * blockDim.x + threadIdx.x;
         unsigned int iy = blockIdx.y * blockDim.y + threadIdx.y;
@@ -25,7 +26,14 @@ namespace MarchingCubes {
             return;
 
         /*surf3Dwrite(__float2half_rn(0.5f), densitiesSurface, ix/2*sizeof(float), iy, iz, cudaBoundaryModeTrap);*/
-        surf3Dwrite(0.5f, densitiesSurface, ix*sizeof(float), iy, iz, cudaBoundaryModeTrap);
+        /*if(ix < W/2)*/
+            /*surf3Dwrite(1.0f, densitiesSurface, ix*sizeof(float), iy, iz, cudaBoundaryModeTrap);*/
+        /*else*/
+            /*surf3Dwrite(0.0f, densitiesSurface, ix*sizeof(float), iy, iz, cudaBoundaryModeTrap);*/
+        float dx = float(ix)/W;
+        float dy = float(iy)/H;
+        float dz = float(iz)/L;
+        surf3Dwrite(dx , densitiesSurface, ix*sizeof(float), iy, iz, cudaBoundaryModeTrap);
     }
 
     __host__ void callComputeDensitiesKernel(
@@ -40,8 +48,26 @@ namespace MarchingCubes {
                 (H+blockDim.y-1)/blockDim.y, 
                 (L+blockDim.z-1)/blockDim.z);
 
+        static float t = 0.0f;
+        static bool pos = true;
+        if(pos) {
+            t += 0.01;
+            if(t > 1.0f) {
+                pos = false;
+                t = 1.0f;
+            }
+        }
+        else {
+            t -= 0.01;
+            if(t < 0.0f) {
+                t = 0.0f;
+                pos = true;
+            }
+        }
 
-        computeDensitiesKernel<<<gridDim,blockDim,0>>>(x0,y0,z0,W,H,L,h,densitiesSurface);
+        printf("frame !\n");
+
+        computeDensitiesKernel<<<gridDim,blockDim,0>>>(x0,y0,z0,W,H,L,h,densitiesSurface,t);
         CHECK_KERNEL_EXECUTION();
     }
 }

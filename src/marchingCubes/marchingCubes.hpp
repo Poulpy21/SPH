@@ -5,7 +5,11 @@
 #include "headers.hpp"
 #include "defines.hpp"
 #include "renderRoot.hpp"
-#include "texture3D.hpp"
+#include "sharedSurfaceResource.hpp"
+
+#include "program.hpp"
+
+using namespace cuda_gl_interop;
 
 namespace MarchingCubes {
 
@@ -30,28 +34,34 @@ namespace MarchingCubes {
             void computeTriangles();
 
             //OpenGL - Cuda
-            void allocateAndRegisterTextures();
             void mapTextureResources();
             void unmapTextureResources();
+
+            //OpenGL
+            void createTriangles();
+            void makeTrianglesProgram();
 
             //VARS
             float _x0, _y0, _z0;     // where does the domain begin
             unsigned int _W, _H, _L; // size of the domain (uint)
             float _Wf, _Hf, _Lf;     // size of the domain (float)
             float _h;                // space delta
+            
+            //3D Surfaces
+            SharedSurfaceResource *_densitiesSurfaceResource, *_normalsSurfaceResource;
+            cudaSurfaceObject_t _densitiesSurfaceObject, _normalsSurfaceObject;
+
+            //VBOs
+            unsigned int _trianglesVBO, _normalsVBO;
+            Program _trianglesProgram;
+            std::map<std::string, int> _trianglesUniformLocations;
 
 
-            //3D Textures
-            SharedSurfaceResource *densities, *textures;
-
-            static const unsigned int _nRessources = 2;
-            cudaGraphicsResource_t _graphicResources[_nRessources];
     };
 
     //CUDA
-    extern void bindSurfaces(const cudaArray_t densitiesArray, const cudaArray_t normalsArray);
-    
-    extern void callComputeDensitiesKernel(float x0, float y0, float z0,
+    extern void callComputeDensitiesKernel(
+            float x0, float y0, float z0,
             unsigned int W, unsigned int H, unsigned int L, 
             float h, 
             cudaSurfaceObject_t densitiesSurface);

@@ -39,7 +39,7 @@ namespace cuda_gl_interop {
             const unsigned int nChannels = utils::externalFormatToChannelNumber(validExternalFormat);
             const size_t nBytesPerChannel = utils::externalTypeToBytes(validExternalType);
             const size_t nBytesPerTexel = nChannels*nBytesPerChannel;
-            const size_t nTexels = max(_width,1u) * max(_height,1u) * max(_depth,1u);
+            const size_t nTexels = std::max(_width,1u) * std::max(_height,1u) * std::max(_depth,1u);
 
             log_console->infoStream() << "[SharedImageResource] Creating image resource...";
             log_console->infoStream() << "[SharedImageResource] \tTop level image size : " << utils::toStringVec3(_width, _height, _depth);
@@ -70,7 +70,7 @@ namespace cuda_gl_interop {
                     assert(_width >= 1 && _height == 1 && _depth == 1);
                     glTexStorage1D(_target, _nLevels, _internalFormat, _width);
                     for (unsigned int i = 0; i < _nLevels; i++) {
-                        levelWidth = max(1u, _width>>i);
+                        levelWidth = std::max(1u, _width>>i);
                         levelHeight = 1u;
                         levelDepth = 1u;
                         levelBytes = levelWidth*levelHeight*levelDepth*nBytesPerTexel;
@@ -95,8 +95,8 @@ namespace cuda_gl_interop {
                     glTexStorage2D(_target, _nLevels, _internalFormat, 
                             _width, _height);
                     for (unsigned int i = 0; i < _nLevels; i++) {
-                        levelWidth = max(1u, _width>>i);
-                        levelHeight = max(1u, _height>>i);
+                        levelWidth = std::max(1u, _width>>i);
+                        levelHeight = std::max(1u, _height>>i);
                         levelDepth = 1u;
                         levelBytes = levelWidth*levelHeight*levelDepth*nBytesPerTexel;
                         totalBytes += levelBytes;
@@ -120,9 +120,9 @@ namespace cuda_gl_interop {
                             _width, _height, _depth);
                     for (unsigned int i = 0; i < _nLevels; i++) {
 
-                        levelWidth = max(1u, _width>>i);
-                        levelHeight = max(1u, _height>>i);
-                        levelDepth = max(1u, _depth>>i);
+                        levelWidth = std::max(1u, _width>>i);
+                        levelHeight = std::max(1u, _height>>i);
+                        levelDepth = std::max(1u, _depth>>i);
                         levelBytes = levelWidth*levelHeight*levelDepth*nBytesPerTexel;
                         totalBytes += levelBytes;
 
@@ -137,7 +137,9 @@ namespace cuda_gl_interop {
                     break;
 
                 default:
-                    throw new runtime_error("Texture type not implemented yet !");
+                    log_console->errorStream() << "[SharedImageResource] Texture type not implemented yet !";
+                    exit(1);
+
             }
 
             log_console->infoStream() << "[SharedImageResource] \tTotal image size : " <<  utils::toStringMemory(totalBytes);

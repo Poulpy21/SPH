@@ -6,6 +6,8 @@ subdirs = $(shell find $1 -type d)
 
 # Règles
 
+default: all
+
 debug: CXXFLAGS += $(DEBUGFLAGS)
 debug: NVCCFLAGS += $(CUDADEBUGFLAGS)
 ifeq ($(LINK), nvcc)

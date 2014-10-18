@@ -69,6 +69,8 @@ int main(int argc, char** argv) {
 
         //texture manager
         Texture::init();
+        
+        //FIN INIT//
 
         log_console->infoStream() << "";
         log_console->infoStream() << "Data size check :"; // !! GL_BYTE != Glbyte !!
@@ -83,13 +85,11 @@ int main(int argc, char** argv) {
         log_console->infoStream() << "Running with OpenGL " << Globals::glVersion << " and glsl version " << Globals::glShadingLanguageVersion << " !";
         log_console->infoStream() << "";
         
-        //FIN INIT//
-        SharedSurfaceResource *resource2D = new SharedSurfaceResource(GL_TEXTURE_2D, 3u, GL_RGBA8, 512u,512u,1u);
 
         RenderRoot *root = new RenderRoot(); 
         viewer->addRenderable(root);
 
-        MarchingCubes::MarchingCubes *MC = new MarchingCubes::MarchingCubes(0.0f,0.0f,0.0f,256u,256u,256u,0.1f);
+        MarchingCubes::MarchingCubes *MC = new MarchingCubes::MarchingCubes(0.0f,0.0f,0.0f,1024u,512u,256u,0.1f);
         root->addChild("Marching Cube", MC);
         
         //Run main loop.
