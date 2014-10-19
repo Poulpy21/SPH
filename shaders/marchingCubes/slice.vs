@@ -24,6 +24,7 @@ out VS_FS_VERTEX {
 
 void main (void)
 {	
-    vertex_out.texCoord = pos/boxSize;
-	gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(pos + t*dot(normal,boxSize)*normal,1);
+    vec3 realPos = pos + t*dot(normal,boxSize)*normal;
+    vertex_out.texCoord = realPos/boxSize;
+	gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(realPos, 1);
 }

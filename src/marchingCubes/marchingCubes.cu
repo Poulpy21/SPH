@@ -30,10 +30,10 @@ namespace MarchingCubes {
             /*surf3Dwrite(1.0f, densitiesSurface, ix*sizeof(float), iy, iz, cudaBoundaryModeTrap);*/
         /*else*/
             /*surf3Dwrite(0.0f, densitiesSurface, ix*sizeof(float), iy, iz, cudaBoundaryModeTrap);*/
-        float dx = float(ix)/W;
-        float dy = float(iy)/H;
-        float dz = float(iz)/L;
-        surf3Dwrite(dx , densitiesSurface, ix*sizeof(float), iy, iz, cudaBoundaryModeTrap);
+        /*float dx = float(ix)/W;*/
+        /*float dy = float(iy)/H;*/
+        /*float dz = float(iz)/L;*/
+        surf3Dwrite(sin(ix/2*h)*sin(iy/4*h)*sin(iz*h/8) , densitiesSurface, ix*sizeof(float), iy, iz, cudaBoundaryModeTrap);
     }
 
     __host__ void callComputeDensitiesKernel(
