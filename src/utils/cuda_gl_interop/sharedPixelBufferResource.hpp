@@ -16,7 +16,7 @@ namespace cuda_gl_interop {
                     bool isPacked,
                     unsigned int flags = cudaGraphicsRegisterFlagsNone,
                     GLenum usage = GL_STREAM_DRAW) :
-                SharedBufferResource(isPacked ? GL_PIXEL_UNPACK_BUFFER : GL_PIXEL_PACK_BUFFER, nBytes, flags, usage),
+                SharedBufferResource(isPacked ? GL_PIXEL_PACK_BUFFER : GL_PIXEL_UNPACK_BUFFER, nBytes, flags, usage),
                 _isPacked(isPacked)
         {
         }

@@ -24,6 +24,10 @@ namespace cuda_gl_interop {
             size_t getSize() {
                 return _nBytes;
             }
+            
+            GLenum getTarget() {
+                return _target;
+            }
 
             void* getDevicePointer() {
                 assert(this->isMapped());
