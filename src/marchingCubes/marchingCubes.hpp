@@ -6,6 +6,8 @@
 #include "defines.hpp"
 #include "renderRoot.hpp"
 #include "sharedSurfaceResource.hpp"
+#include "sharedPixelBufferResource.hpp"
+#include "sharedVertexBufferResource.hpp"
 
 #include "program.hpp"
 
@@ -50,6 +52,8 @@ namespace MarchingCubes {
             //3D Surfaces
             SharedSurfaceResource *_densitiesSurfaceResource, *_normalsSurfaceResource;
             cudaSurfaceObject_t _densitiesSurfaceObject, _normalsSurfaceObject;
+
+            SharedBufferResource *_test1, *_test2;
 
             //VBOs
             unsigned int _trianglesVBO, _normalsVBO;

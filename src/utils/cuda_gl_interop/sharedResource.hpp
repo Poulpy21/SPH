@@ -8,9 +8,9 @@
 
 namespace cuda_gl_interop {
 
-    class sharedResource {
+    class SharedResource {
         public:
-            virtual ~sharedResource() {
+            virtual ~SharedResource() {
                 if(_isMapped)
                     unmapResource();
                 if(_isRegistered)
@@ -56,7 +56,7 @@ namespace cuda_gl_interop {
             }
         
         protected:
-            sharedResource() :
+            SharedResource() :
                 _glResource(0),
                 _cudaResource(0),
                 _isRegistered(false),

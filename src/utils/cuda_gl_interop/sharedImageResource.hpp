@@ -11,7 +11,7 @@
 
 namespace cuda_gl_interop {
 
-    class SharedImageResource : public sharedResource {
+    class SharedImageResource : public SharedResource {
 
         public:
             virtual ~SharedImageResource() {};
@@ -23,7 +23,7 @@ namespace cuda_gl_interop {
                     unsigned int internalFormat,
                     unsigned int width, unsigned int height, unsigned int depth,
                     unsigned int flags) :
-                sharedResource(),
+                SharedResource(),
                 _target(target),
                 _nLevels(nLevels),
                 _internalFormat(internalFormat),

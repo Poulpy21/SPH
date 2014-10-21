@@ -58,6 +58,7 @@ namespace MarchingCubes {
 
         createTriangles();
         makeTrianglesProgram();
+
     }
 
     MarchingCubes::~MarchingCubes() {
