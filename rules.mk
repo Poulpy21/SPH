@@ -62,7 +62,7 @@ $(OBJDIR)%.cu.o: $(SRCDIR)%.cu
 
 # "-" pour enlever les messages d'erreurs
 # "@" pour silent
-.PHONY: clean cleanall create_dirs all distrib
+.PHONY: clean cleanall create_dirs all distrib tags
 
 clean:
 	-@rm -f $(OBJ) 
@@ -75,3 +75,6 @@ create_dirs:
 
 distrib:
 	echo $(DISTRIB)
+	
+tags:
+	$(CXX) $(INCLUDE) -M $(SRC) 2> /dev/null | grep -o '[^ ]*\.h\{1,2\}p\{0,2\}[^p]' | sort | uniq | ctags -L - --c++-kinds=+p --fields=+iaS --extra=+q 
