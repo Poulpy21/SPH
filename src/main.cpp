@@ -25,6 +25,8 @@
 
 #include "sharedSurfaceResource.hpp"
 
+#include "boidSystem.hpp"
+
 using namespace log4cpp;
 using namespace cuda_gl_interop;
 

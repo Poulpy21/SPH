@@ -49,7 +49,7 @@ LIBS = -Llocal/lib/ $(VIEWER_LIBPATH) $(CUDA_LIBPATH) $(OPENAL_LIBPATH)
 DEFINES= $(VIEWER_DEFINES) $(OPT)
 
 CXX=g++
-CXXFLAGS= -W -Wall -Wextra -Wno-unused-parameter -pedantic -std=c++0x -m64
+CXXFLAGS= -W -Wall -Wextra -Wno-unused-parameter -pedantic -std=c++11 -m64
 #-Wshadow -Wstrict-aliasing -Weffc++ -Werror
 NVCCFLAGS= -Xcompiler -Wall -m64 -arch sm_$(NARCH) --relocatable-device-code true
 
