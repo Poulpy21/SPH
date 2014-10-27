@@ -7,7 +7,7 @@
 using namespace qglviewer;
 
 struct Boid {
-        Boid(Vec x0, Vec v0, Vec a0, float m, float dt);
+        Boid(Vec x0, Vec v0, Vec a0, float m);
         virtual ~Boid ();
         
         static unsigned int globalId;
@@ -31,10 +31,11 @@ std::ostream & operator << (std::ostream &os, Boid &B) {
     return os;
 }
 
-Boid::Boid(Vec x0, Vec v0, Vec a0, float m0, float dt) :
+Boid::Boid(Vec x0, Vec v0, Vec a0, float m0) :
 id(0), x(x0), v(v0), a(a0), m(m0) {
             //compute initial Euler step with the given dt
-            v_old=  v - 0.5f*dt*a;
+            //v_old=  v - 0.5f*dt*a;
+            //TODO
 
             id = Boid::globalId;
             Boid::globalId++;

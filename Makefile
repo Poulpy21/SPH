@@ -79,11 +79,15 @@ EXCLUDED_SUBDIRS = $(foreach DIR, $(EXCL), $(call subdirs, $(SRCDIR)/$(DIR)))
 SUBDIRS =  $(filter-out $(EXCLUDED_SUBDIRS), $(call subdirs, $(SRCDIR)))
 
 SRC_EXTENSIONS = c C cc cpp cu
-WEXT = $(addprefix *., $(SRC_EXTENSIONS))
+SRC_WEXT = $(addprefix *., $(SRC_EXTENSIONS))
+
+HEADERS_EXTENSIONS = h hh hpp
+HEADERS_WEXT = $(addprefix *., $(HEADERS_EXTENSIONS))
 
 MOCSRC = $(shell grep -rlw $(SRCDIR)/ -e 'Q_OBJECT' --include=*.h | xargs) #need QT preprocessor
 MOCOUTPUT = $(addsuffix .moc, $(basename $(MOCSRC)))
-SRC = $(foreach DIR, $(SUBDIRS), $(foreach EXT, $(WEXT), $(wildcard $(DIR)/$(EXT))))
+SRC = $(foreach DIR, $(SUBDIRS), $(foreach EXT, $(SRC_WEXT), $(wildcard $(DIR)/$(EXT))))
+HEADERS = $(foreach DIR, $(SUBDIRS), $(foreach EXT, $(HEADERS_WEXT), $(wildcard $(DIR)/$(EXT))))
 OBJ = $(subst $(SRCDIR), $(OBJDIR), $(addsuffix .o, $(SRC)))
 
 include rules.mk

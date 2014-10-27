@@ -23,12 +23,13 @@ class BoidSystem : public RenderTree {
 		void addInteraction(BoidInteraction *interaction);
 
     protected:
+		//Boid system
         void initBoids(BoidGenerator &boidGenerator);
         void updateNeighborStructure();
         void computeForces();
         void integrateScheme();
 
-        //renderTree
+        //RenderTree
 		virtual void drawDownwards(const float *currentTransformationMatrix = consts::identity4) = 0;
 	
 		//Boid system
@@ -77,10 +78,10 @@ void BoidSystem::attachSchemeIntegrator(SchemeIntegrator *schemeIntegrator, bool
 }
 
 void BoidSystem::attachNeighborStruct(NeighborStruct *neighborStruct, bool keepAlive) {
+    log_console->infoStream() << "[BoidSystem] Attaching neighbor structure " << neighborStruct->getName() << " !";
 	assert(neighborStruct != 0);
 	if(!_keepBoidNeighborStructAlive && _neighborStruct)
 		delete _neighborStruct;
-    log_console->infoStream() << "[BoidSystem] Attaching neighbor structure " << neighborStruct->getName() << " !";
 	_neighborStruct = neighborStruct;
 	_keepBoidNeighborStructAlive = keepAlive;
 }
@@ -92,6 +93,7 @@ void BoidSystem::addInteraction(BoidInteraction *interaction) {
 
 void BoidSystem::step() 
 {
+    assert(_neighborStruct != 0);
     log_console->debugStream() << "[BoidSystem] *** Step ***";
     this->updateNeighborStructure();
     this->computeForces();
@@ -101,6 +103,7 @@ void BoidSystem::step()
         
 void BoidSystem::initBoids(BoidGenerator &boidGenerator) {
 	log_console->debugStream() << "[BoidSystem] Initializing " << _nBoids << " boids !";
+    assert(_neighborStruct != 0);
 	for (unsigned int i = 0; i < _nBoids; i++) {
 		_neighborStruct->insertBoid(boidGenerator());
 	}
@@ -108,6 +111,7 @@ void BoidSystem::initBoids(BoidGenerator &boidGenerator) {
 
 void BoidSystem::updateNeighborStructure() {
 	log_console->debugStream() << "[BoidSystem] Updating neighbor structure !";
+    assert(_neighborStruct != 0);
 	_neighborStruct->update();
 }
         
@@ -120,6 +124,7 @@ void BoidSystem::computeForces() {
         
 void BoidSystem::integrateScheme() {
 	log_console->debugStream() << "[BoidSystem] Integrating scheme !";
+    assert(_schemeIntegrator != 0);
     _schemeIntegrator->integrateScheme(_neighborStruct->getBoids());
 }
 

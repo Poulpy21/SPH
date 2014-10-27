@@ -31,7 +31,7 @@ release: all
 
 all: create_dirs $(TARGET)
 
-$(TARGET): $(MOCOUTPUT) $(OBJ)
+$(TARGET): $(MOCOUTPUT) $(OBJ) $(SRC)
 	@echo
 	@echo
 	$(LINK) $(LIBS) $(OBJ) -o $@ $(LDFLAGS) $(LINKFLAGS) $(DEFINES)
@@ -44,18 +44,11 @@ $(SRCDIR)%.moc : $(SRCDIR)%.hpp
 ################
 
 
-$(OBJDIR)%.C.o : $(SRCDIR)%.C 
-	$(CXX) $(INCLUDE) -o $@ -c $^ $(CXXFLAGS) $(DEFINES)
-	@echo
-$(OBJDIR)%.cc.o : $(SRCDIR)%.cc 
-	$(CXX) $(INCLUDE) -o $@ -c $^ $(CXXFLAGS) $(DEFINES)
-	@echo
-$(OBJDIR)%.cpp.o : $(SRCDIR)%.cpp 
+$(OBJDIR)%.cpp.o : $(SRCDIR)%.cpp
 	$(CXX) $(INCLUDE) -o $@ -c $^ $(CXXFLAGS) $(DEFINES)
 	@echo
 
-
-$(OBJDIR)%.cu.o: $(SRCDIR)%.cu 
+$(OBJDIR)%.cu.o: $(SRCDIR)%.cu
 	@echo
 	$(NVCC) $(INCLUDE) -o $@ -c $^ $(NVCCFLAGS) $(DEFINES)
 
