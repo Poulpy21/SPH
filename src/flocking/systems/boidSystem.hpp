@@ -69,16 +69,11 @@ class BoidSystem : public RenderTree {
 
     private: 
 
-        //RenderTree//
-        //
         //This is called by QGLViewer before each rendered OpenGL frame.
 		void animateDownwards() { step(); };
         
-        //Boid system//
-        // 
         //Compute one step of the simulation.
         void step();
-
         
 };
         
@@ -141,6 +136,9 @@ void BoidSystem<S>::initScheme() {
 template <typename S>
 void BoidSystem<S>::step() 
 {
+    if(!_schemeInitialized)
+        return;
+
     assert(_neighborStruct != 0);
     log_console->debugStream() << "[BoidSystem] *** Step ***";
     this->updateNeighborStructure();

@@ -46,7 +46,4 @@ template <typename S>
 Boid<S>::~Boid() {
 }
 
-//compute initial Euler step with the given dt
-//v_old=  v - 0.5f*dt*a;
-
 #endif /* end of include guard: BOID_H */
