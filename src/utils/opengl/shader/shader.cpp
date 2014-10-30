@@ -49,7 +49,10 @@ shader(0), location(location_)
 	glShaderSource(shader, 1, &prog , &prog_length);
 	glCompileShader(shader);
 
-	if (GL_COMPILE_STATUS == GL_FALSE) {
+    int success = 0;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+
+	if (success == GL_FALSE) {
 		log_console->errorStream() << "\nCompilation failed !";
 
 		char* buffer = new char[1000];

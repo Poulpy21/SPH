@@ -68,7 +68,7 @@ namespace Matrix {
 
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
-				M[4*i+j] = (float) R[4*j+i];
+				M[4*i+j] = static_cast<float>(R[4*j+i]);
                                 if(i==j)
                                         M[4*i+j]*=scale;
 			}

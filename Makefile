@@ -16,9 +16,10 @@ endif
 OS=$(shell uname -s)
 
 #############
-## REMINDER #######################################################
-# Penser à utiliser -isystem au lieu de -I pour les lib externes! #
-###################################################################
+## REMINDER #########################################################
+# - Penser à utiliser -isystem au lieu de -I pour les lib externes! #
+# - Nvcc support experimental du c++11 à tester...                  #
+#####################################################################
 
 # Linux ########################################################
 ifeq ($(OS), Linux)
@@ -48,17 +49,17 @@ endif
 
 #Compilateurs
 LINK= nvcc
-LDFLAGS= $(L_QGLVIEWER) $(VIEWER_LIBS) -llog4cpp $(CUDA_LIBS) $(OPENAL_LIBS)
+LDFLAGS= $(L_QGLVIEWER) $(VIEWER_LIBS) $(CUDA_LIBS) $(OPENAL_LIBS) -llog4cpp -lgomp 
 INCLUDE = -I$(SRCDIR) $(foreach dir, $(call subdirs, $(SRCDIR)), -I$(dir)) $(VIEWER_INCLUDEPATH) $(CUDA_INCLUDEPATH) $(OPENAl_INCLUDEPATH)
 LIBS = -Llocal/lib/ $(VIEWER_LIBPATH) $(CUDA_LIBPATH) $(OPENAL_LIBPATH)
 DEFINES= $(VIEWER_DEFINES) $(OPT)
 
-WERR= -Weverything -Wall -Wextra -Wbad-function-cast -Wdeclaration-after-statement -Wmissing-format-attribute -Wmissing-noreturn -Wnested-externs -Wold-style-definition -Wredundant-decls -Wsequence-point -Wstrict-prototypes -Wswitch-default -Weffc++ -Wexit-time-destructors -Wglobal-constructors -Wcovered-switch-default -Wmissing-variable-declarations -Wmissing-prototypes -Wdeprecated -Wunreachable-code  -Wsign-conversion -Wold-style-cast 
-WNOERR= -Wno-weak-vtables -Wno-c++98-compat-pedantic -Wno-unused-parameter -Wno-deprecated-register -Wno-conversion -Wno-shadow -Wno-padded
+WERR= -Wall -Wextra -Wmissing-format-attribute -Wmissing-noreturn -Wredundant-decls -Wsequence-point -Wswitch-default -Wdeprecated -Wunreachable-code  -Wsign-conversion -Wold-style-cast -Wcovered-switch-default -Wmissing-variable-declarations -Wfloat-equal -Wdouble-promotion -Wsuggest-attribute
+WNOERR= -Wno-weak-vtables -Wno-c++98-compat-pedantic -Wno-unused-parameter -Wno-deprecated-register -Wno-conversion -Wno-shadow -Wno-padded -Wno-global-constructors -Wno-exit-time-destructors -Wno-source-uses-openmp -Wno-unknown-warning-option -Wno-effc++
 
 CXX=clang
-CXXFLAGS= -std=c++11 -m64 $(WERR) $(WNOERR)
-NVCCFLAGS= -arch sm_$(NARCH) --relocatable-device-code true -Xcompiler="-m64 -Wall -Wextra -Wno-unused-parameter"
+CXXFLAGS= -std=c++11 -m64 -fopenmp $(WERR) $(WNOERR)
+NVCCFLAGS= -arch sm_$(NARCH) --relocatable-device-code true -Xcompiler="-fopenmp -m64 -Wall -Wextra -Wno-unused-parameter"
 
 ifeq ($(LINK), nvcc)
 LINKFLAGS=$(NVCCFLAGS)

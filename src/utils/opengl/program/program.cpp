@@ -37,7 +37,7 @@ void Program::attachShader(Shader const &shader) {
 void Program::bindAttribLocation(unsigned int location, std::string const &attribVarName) {
 	log_console->infoStream() << logProgramHead << "Binding attribute '" << attribVarName << "' to location " << location << ".";
 
-	if(location > (unsigned int)Globals::glMaxVertexAttribs) {
+	if(location > static_cast<unsigned int>(Globals::glMaxVertexAttribs)) {
 		log_console->warnStream() << "Location " << location 
 			<< " is superior to GL_MAX_VERTEX_ATTRIBS = " << Globals::glMaxVertexAttribs
 			<< "!";
@@ -51,7 +51,7 @@ void Program::bindAttribLocation(unsigned int location, std::string const &attri
 void Program::bindFragDataLocation(unsigned int location, std::string const &fragVarName) {
 	log_console->infoStream() << logProgramHead << "Binding frag data '" << fragVarName << "' to location " << location << ".";
 
-	if(location > (unsigned int)Globals::glMaxDrawBuffers) {
+	if(location > static_cast<unsigned int>(Globals::glMaxDrawBuffers)) {
 		log_console->warnStream() << "Location " << location 
 			<< " is superior to GL_MAX_DRAW_BUFFERS = " << Globals::glMaxDrawBuffers
 			<< "!";
@@ -160,7 +160,7 @@ void Program::link() {
 	for(; it != attribLocations.end(); it++) {
 		int id = glGetAttribLocation(programId, it->first.c_str());
 
-		if(id != (int)it->second)
+		if(id != static_cast<int>(it->second))
 			log_console->warnStream() << logProgramHead <<"Attrib data '" << it->first << "' was not set to location " << it->second << " (id=-1)."; 
 	}
 

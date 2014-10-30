@@ -28,7 +28,7 @@ Texture2D::~Texture2D() {
 
 void Texture2D::bindAndApplyParameters(unsigned int location) {
 
-	if(location >= (unsigned int)Globals::glMaxCombinedTextureImageUnits) {
+	if(location >= static_cast<unsigned int>(Globals::glMaxCombinedTextureImageUnits)) {
 		log_console->errorStream() << logTextureHead << "Trying to bind invalid texture location " 
 			<< location << " (MAX = " << Globals::glMaxCombinedTextureImageUnits << ") !";
 		exit(1);

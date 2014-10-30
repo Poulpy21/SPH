@@ -7,6 +7,7 @@
 #include <ostream>
 #include <iostream>
 #include <qapplication.h>
+#include <omp.h>
 
 #include "globals.hpp"
 #include "log.hpp"
@@ -32,71 +33,79 @@ using namespace cuda_gl_interop;
 
 int main(int argc, char** argv) {
 
-        //logs
-        log4cpp::initLogs();
-        log_console->infoStream() << "[Logs Init] ";
-        
-        //random
-        srand(static_cast<unsigned int>(time(NULL)));
-        log_console->infoStream() << "[Rand Init] ";
+    //logs
+    log4cpp::initLogs();
+    log_console->infoStream() << "[Logs Init] ";
 
-        //cuda
-        //log_console->infoStream() << "[CUDA Init] ";
-        //CudaUtils::logCudaDevices(*log_console);
+    //random
+    srand(static_cast<unsigned int>(time(NULL)));
+    log_console->infoStream() << "[Rand Init] ";
 
-        // glut initialisation (mandatory) 
-        glutInit(&argc, argv);
-        log_console->infoStream() << "[Glut Init] ";
+    //cuda
+    //log_console->infoStream() << "[CUDA Init] ";
+    //CudaUtils::logCudaDevices(*log_console);
 
-        // Read command lines arguments.
-        QApplication application(argc,argv);
-        log_console->infoStream() << "[Qt Init] ";
+    // glut initialisation (mandatory) 
+    glutInit(&argc, argv);
+    log_console->infoStream() << "[Glut Init] ";
 
-        // Instantiate the viewer (mandatory)
-        log_console->infoStream() << "[Viewer Init] ";
-        Viewer *viewer = new Viewer();
-        viewer->setWindowTitle("SPH");
-        viewer->show();
+    // Read command lines arguments.
+    QApplication application(argc,argv);
+    log_console->infoStream() << "[Qt Init] ";
 
-        //glew initialisation (mandatory)
-        log_console->infoStream() << "[Glew Init] " << glewGetErrorString(glewInit());
+    // Instantiate the viewer (mandatory)
+    log_console->infoStream() << "[Viewer Init] ";
+    Viewer *viewer = new Viewer();
+    viewer->setWindowTitle("SPH");
+    viewer->show();
 
-        //global vars
-        Globals::init();
+    //glew initialisation (mandatory)
+    log_console->infoStream() << "[Glew Init] " << glewGetErrorString(glewInit());
+
+    //global vars
+    Globals::init();
 #ifdef _DEBUG
-        Globals::print(std::cout);
+    Globals::print(std::cout);
 #endif
-        Globals::check();
-        Globals::viewer = viewer;
+    Globals::check();
+    Globals::viewer = viewer;
 
-        //texture manager
-        Texture::init();
-        
-        //FIN INIT//
+    //texture manager
+    Texture::init();
 
-        log_console->infoStream() << "";
-        log_console->infoStream() << "Data size check :"; // !! GL_BYTE != Glbyte !!
-        log_console->infoStream() << "\tSizeOf(GLboolean) = " << sizeof(GLboolean);
-        log_console->infoStream() << "\tSizeOf(GLbyte) = " << sizeof(GLbyte);
-        log_console->infoStream() << "\tSizeOf(GLshort) = " << sizeof(GLshort);
-        log_console->infoStream() << "\tSizeOf(GLint) = " << sizeof(GLint);
-        log_console->infoStream() << "\tSizeOf(GLfloat) = " << sizeof(GLfloat);
-        log_console->infoStream() << "\tSizeOf(GLdouble) = " << sizeof(GLdouble);
+    //FIN INIT//
 
-        log_console->infoStream() << "";
-        log_console->infoStream() << "Running with OpenGL " << Globals::glVersion << " and glsl version " << Globals::glShadingLanguageVersion << " !";
-        log_console->infoStream() << "";
-        
+    log_console->infoStream() << "";
+    log_console->infoStream() << "Data size check :"; // !! GL_BYTE != Glbyte !!
+    log_console->infoStream() << "\tSizeOf(GLboolean) = " << sizeof(GLboolean);
+    log_console->infoStream() << "\tSizeOf(GLbyte) = " << sizeof(GLbyte);
+    log_console->infoStream() << "\tSizeOf(GLshort) = " << sizeof(GLshort);
+    log_console->infoStream() << "\tSizeOf(GLint) = " << sizeof(GLint);
+    log_console->infoStream() << "\tSizeOf(GLfloat) = " << sizeof(GLfloat);
+    log_console->infoStream() << "\tSizeOf(GLdouble) = " << sizeof(GLdouble);
 
-        RenderRoot *root = new RenderRoot(); 
-        viewer->addRenderable(root);
+    log_console->infoStream() << "";
+    log_console->infoStream() << "Running with OpenGL " << Globals::glVersion << " and glsl version " << Globals::glShadingLanguageVersion << " !";
+    log_console->infoStream() << "";
+    
+    omp_set_num_threads(2);
+#pragma omp parallel for
+{
+    for(int n=0; n<100; ++n) {
+        int this_thread = omp_get_thread_num();
+        std::cout << "Hello from thread " << this_thread << " !" << std::endl;
+    }
+}
 
-        //Run main loop.
-        application.exec();
+    //RenderRoot *root = new RenderRoot(); 
+    //viewer->addRenderable(root);
 
-        //Exit
-        alutExit();
-        
-        return EXIT_SUCCESS;
+    //Run main loop.
+    //application.exec();
+
+    //Exit
+    //alutExit();
+
+    return EXIT_SUCCESS;
 }
 

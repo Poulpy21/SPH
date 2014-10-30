@@ -12,7 +12,7 @@ Audible::Audible(std::string const &sourcePath,
 	_sourcePath(sourcePath), _source(0), _buffer(0)
 {
 	
-	alGenSources((ALuint)1, &_source);
+	alGenSources(1, &_source);
 	
 	_buffer = alutCreateBufferFromFile(sourcePath.c_str());
 	alSourcei(_source, AL_BUFFER, _buffer);
@@ -47,7 +47,14 @@ void Audible::setSourceVelocity(const qglviewer::Vec &vel) {
 }
 
 void Audible::setSourceOrientation(const qglviewer::Vec &v1, const qglviewer::Vec &v2) {
-	ALfloat orientation[] = {(float)v1.x, (float)v1.y, (float)v1.z, (float)v2.x, (float)v2.y, (float)v2.z};
+	ALfloat orientation[] = {
+        static_cast<float>(v1.x), 
+        static_cast<float>(v1.y), 
+        static_cast<float>(v1.z), 
+        static_cast<float>(v2.x), 
+        static_cast<float>(v2.y), 
+        static_cast<float>(v2.z)
+    };
 	alSourcefv(_source, AL_ORIENTATION, orientation);
 }
 
@@ -65,7 +72,14 @@ void Audible::setListenerVelocity(const qglviewer::Vec &vel) {
 }
 
 void Audible::setListenerOrientation(const qglviewer::Vec &v1, const qglviewer::Vec &v2) {
-	ALfloat orientation[] = {(float)v1.x, (float)v1.y, (float)v1.z, (float)v2.x, (float)v2.y, (float)v2.z};
+	ALfloat orientation[] = {
+        static_cast<float>(v1.x), 
+        static_cast<float>(v1.y), 
+        static_cast<float>(v1.z), 
+        static_cast<float>(v2.x), 
+        static_cast<float>(v2.y), 
+        static_cast<float>(v2.z)
+    };
 	alListenerfv(AL_ORIENTATION, orientation);
 }
 

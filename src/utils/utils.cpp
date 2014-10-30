@@ -16,7 +16,7 @@ namespace utils {
 		unsigned long val = 1;
 		for (int i = 0; i < 6; i++) {
 			if(bytes < 1024*val) {
-				ss << round(100*(float)bytes/val)/100.0 << prefix[i] << 'B';
+				ss << round(100*static_cast<float>(bytes)/val)/100.0 << prefix[i] << 'B';
 				break;
 			}
 			val *= 1024;

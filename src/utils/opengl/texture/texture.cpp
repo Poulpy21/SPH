@@ -68,9 +68,6 @@ void Texture::applyParameters() const {
 			case(ParamType::FV):
 				glTexParameterfv(textureType, p.paramName(), p.params().fv);	
 				break;
-			default: 
-				log_console->errorStream() << "[TEXTURE.CPP] The impossible happened !";
-				exit(1);
 		}
 	}
 }
@@ -103,7 +100,7 @@ void Texture::init() {
 
 std::vector<unsigned int> Texture::requestTextures(unsigned int nbRequested) {
 	
-	if(nbRequested > (unsigned int) Globals::glMaxCombinedTextureImageUnits) {
+	if(nbRequested > static_cast<unsigned int>(Globals::glMaxCombinedTextureImageUnits)) {
 		log_console->errorStream() << "[TEXTURE MANAGER]  Received invalid texture request : " << nbRequested  << " (MAX = " << Globals::glMaxCombinedTextureImageUnits << ") ! Your hardware simply can't handle it ! Go fix your shaders or just buy a tri-SLI of Titan-Z !";
 		exit(1);
 	}
@@ -167,7 +164,7 @@ int Texture::getLastKnownLocation() const {
 }
 
 bool Texture::isBinded() const {
-	return (lastKnownLocation != -1) && (textureId == (unsigned int)textureLocations[lastKnownLocation]);
+	return (lastKnownLocation != -1) && (textureId == static_cast<unsigned int>(textureLocations[lastKnownLocation]));
 }
 
 bool Texture::compareFunc(std::pair<long, unsigned int> a, std::pair<long, unsigned int> b) {
