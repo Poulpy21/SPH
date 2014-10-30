@@ -15,12 +15,12 @@ namespace cuda_gl_interop {
                     unmapResource();
                 if(_isRegistered)
                     unregisterResource();
-            };
+            }
 
             void mapResource(cudaStream_t stream = 0) {
                 assert(_isRegistered);
                 if(_isMapped) {
-                    log_console->warnStream() << "[OpenGLCUDASharedResource] Resource was already mapped !";
+                   log4cpp::log_console->warnStream() << "[OpenGLCUDASharedResource] Resource was already mapped !";
                 }
                 else {
                     CHECK_CUDA_ERRORS(cudaGraphicsMapResources(1, &_cudaResource, stream));
@@ -35,7 +35,7 @@ namespace cuda_gl_interop {
                     _isMapped = false;
                 }
                 else {
-                    log_console->warnStream() << "[OpenGLCUDASharedResource] Resource was already unmapped !";
+                   log4cpp::log_console->warnStream() << "[OpenGLCUDASharedResource] Resource was already unmapped !";
                 }
             }
             
@@ -66,7 +66,7 @@ namespace cuda_gl_interop {
             void registerResource() {
                 assert(!_isMapped);
                 if(_isRegistered) {
-                    log_console->warnStream() << "[OpenGLCUDASharedResource] Resource was already registered !";
+                   log4cpp::log_console->warnStream() << "[OpenGLCUDASharedResource] Resource was already registered !";
                 }
                 else {
                     registerInternalResource();
@@ -81,7 +81,7 @@ namespace cuda_gl_interop {
                     _isRegistered = false;
                 }
                 else {
-                    log_console->warnStream() << "[OpenGLCUDASharedResource] Resource was already unregistered !";
+                   log4cpp::log_console->warnStream() << "[OpenGLCUDASharedResource] Resource was already unregistered !";
                 }
             }
             

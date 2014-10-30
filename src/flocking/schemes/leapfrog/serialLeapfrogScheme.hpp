@@ -4,7 +4,6 @@
 
 #include "leapfrogScheme.hpp"
 
-using namespace qglviewer;
 
 class SerialLeapFrogScheme : public LeapFrogScheme {
     
@@ -14,20 +13,20 @@ class SerialLeapFrogScheme : public LeapFrogScheme {
         SerialLeapFrogScheme(float dt) : LeapFrogScheme(dt) {};
         ~SerialLeapFrogScheme() {};
 
-        void initScheme(std::list<Boid<S>*> boids) {
-            for(Boid<S>* B : boids) {
-                B->scheme.v_old =  B->v - 0.5f*_dt*B->a;
-            }
+        void initScheme(std::list<Boid*> boids) {
+            //for(Boid* B : boids) {
+                //B->scheme.v_old =  B->v - 0.5f*_dt*B->a;
+            //}
         }
 
-        void integrateScheme(std::list<Boid<S>*> boids) {
+        void integrateScheme(std::list<Boid*> boids) {
             Vec v_h;
-            for(Boid<S>* B : boids) {
-                v_h = B->scheme.v_old + B->a*_dt;
-                B->x = B->x + v_h*_dt;
-                B->v = 0.5*(B->v_old + v_h);
-                B->scheme.v_old = v_h;
-            }
+            //for(Boid* B : boids) {
+                //v_h = B->scheme.v_old + B->a*_dt;
+                //B->x = B->x + v_h*_dt;
+                //B->v = 0.5*(B->v_old + v_h);
+                //B->scheme.v_old = v_h;
+            //}
         }
         
         const std::string getName() {

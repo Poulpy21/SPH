@@ -14,7 +14,7 @@ namespace cuda_gl_interop {
     class SharedImageResource : public SharedResource {
 
         public:
-            virtual ~SharedImageResource() {};
+            virtual ~SharedImageResource() {}
 
         protected:
             explicit SharedImageResource(
@@ -41,15 +41,15 @@ namespace cuda_gl_interop {
             const size_t nBytesPerTexel = nChannels*nBytesPerChannel;
             const size_t nTexels = std::max(_width,1u) * std::max(_height,1u) * std::max(_depth,1u);
 
-            log_console->infoStream() << "[SharedImageResource] Creating image resource...";
-            log_console->infoStream() << "[SharedImageResource] \tTop level image size : " << utils::toStringVec3(_width, _height, _depth);
-            log_console->infoStream() << "[SharedImageResource] \tInternal data format : " << utils::toStringInternalFormat(_internalFormat);
-            log_console->debugStream() << "[SharedImageResource] \tExternal data format chosen : " << utils::toStringExternalFormat(validExternalFormat);
-            log_console->debugStream() << "[SharedImageResource] \tExternal data type chosen : " << utils::toStringExternalType(validExternalType);
-            log_console->debugStream() << "[SharedImageResource] \tNumber of channels : " << nChannels;
-            log_console->debugStream() << "[SharedImageResource] \tNumber of bytes per channel : " << nBytesPerChannel;
-            log_console->debugStream() << "[SharedImageResource] \tNumber of bytes per texel : " << nBytesPerTexel;
-            log_console->debugStream() << "[SharedImageResource] \tNumber of top level texels : " << nTexels;
+           log4cpp::log_console->infoStream() << "[SharedImageResource] Creating image resource...";
+           log4cpp::log_console->infoStream() << "[SharedImageResource] \tTop level image size : " << utils::toStringVec3(_width, _height, _depth);
+           log4cpp::log_console->infoStream() << "[SharedImageResource] \tInternal data format : " << utils::toStringInternalFormat(_internalFormat);
+           log4cpp::log_console->debugStream() << "[SharedImageResource] \tExternal data format chosen : " << utils::toStringExternalFormat(validExternalFormat);
+           log4cpp::log_console->debugStream() << "[SharedImageResource] \tExternal data type chosen : " << utils::toStringExternalType(validExternalType);
+           log4cpp::log_console->debugStream() << "[SharedImageResource] \tNumber of channels : " << nChannels;
+           log4cpp::log_console->debugStream() << "[SharedImageResource] \tNumber of bytes per channel : " << nBytesPerChannel;
+           log4cpp::log_console->debugStream() << "[SharedImageResource] \tNumber of bytes per texel : " << nBytesPerTexel;
+           log4cpp::log_console->debugStream() << "[SharedImageResource] \tNumber of top level texels : " << nTexels;
 
             //allocate initial 0's data
             void *junkData = calloc(nTexels, nBytesPerTexel);
@@ -75,11 +75,11 @@ namespace cuda_gl_interop {
                         levelDepth = 1u;
                         levelBytes = levelWidth*levelHeight*levelDepth*nBytesPerTexel;
                         totalBytes += levelBytes;
-                        log_console->debugStream() << "[SharedImageResource] \tInitializing texture level " << i << " " <<  utils::toStringVec3(levelWidth, levelHeight, levelDepth) << " with 0's (" << utils::toStringMemory(levelBytes) << ").";
+                       log4cpp::log_console->debugStream() << "[SharedImageResource] \tInitializing texture level " << i << " " <<  utils::toStringVec3(levelWidth, levelHeight, levelDepth) << " with 0's (" << utils::toStringMemory(levelBytes) << ").";
 
-                        glTexSubImage1D(_target, i,
+                        glTexSubImage1D(_target, int(i),
                                 0,
-                                levelWidth, 
+                                int(levelWidth), 
                                 validExternalFormat, validExternalType,
                                 junkData);
                     }
@@ -100,11 +100,11 @@ namespace cuda_gl_interop {
                         levelDepth = 1u;
                         levelBytes = levelWidth*levelHeight*levelDepth*nBytesPerTexel;
                         totalBytes += levelBytes;
-                        log_console->debugStream() << "[SharedImageResource] \tInitializing texture level " << i << " " <<  utils::toStringVec3(levelWidth, levelHeight, levelDepth) << " with 0's (" << utils::toStringMemory(levelBytes) << ").";
+                       log4cpp::log_console->debugStream() << "[SharedImageResource] \tInitializing texture level " << i << " " <<  utils::toStringVec3(levelWidth, levelHeight, levelDepth) << " with 0's (" << utils::toStringMemory(levelBytes) << ").";
 
-                        glTexSubImage2D(_target, i,
+                        glTexSubImage2D(_target, int(i),
                                 0,0, 
-                                levelWidth, levelHeight, 
+                                int(levelWidth), int(levelHeight), 
                                 validExternalFormat, validExternalType,
                                 junkData);
                     }
@@ -126,7 +126,7 @@ namespace cuda_gl_interop {
                         levelBytes = levelWidth*levelHeight*levelDepth*nBytesPerTexel;
                         totalBytes += levelBytes;
 
-                        log_console->debugStream() << "[SharedImageResource] \tInitializing texture level " << i << " " <<  utils::toStringVec3(levelWidth, levelHeight, levelDepth) << " with 0's (" << utils::toStringMemory(levelBytes) << ").";
+                       log4cpp::log_console->debugStream() << "[SharedImageResource] \tInitializing texture level " << i << " " <<  utils::toStringVec3(levelWidth, levelHeight, levelDepth) << " with 0's (" << utils::toStringMemory(levelBytes) << ").";
 
                         glTexSubImage3D(_target, i,
                                 0,0,0, 
@@ -137,19 +137,19 @@ namespace cuda_gl_interop {
                     break;
 
                 default:
-                    log_console->errorStream() << "[SharedImageResource] Texture type not implemented yet !";
+                   log4cpp::log_console->errorStream() << "[SharedImageResource] Texture type not implemented yet !";
                     exit(1);
 
             }
 
-            log_console->infoStream() << "[SharedImageResource] \tTotal image size : " <<  utils::toStringMemory(totalBytes);
+           log4cpp::log_console->infoStream() << "[SharedImageResource] \tTotal image size : " <<  utils::toStringMemory(totalBytes);
 
             glBindTexture(_target, 0);
 
             CHECK_OPENGL_ERRORS();
             assert(glIsTexture(this->getGlResource()));
 
-            log_console->infoStream() << "[SharedImageResource] Registering Image Resource to Cuda..";
+           log4cpp::log_console->infoStream() << "[SharedImageResource] Registering Image Resource to Cuda..";
             registerResource();
 
             free(junkData);
@@ -192,7 +192,7 @@ namespace cuda_gl_interop {
                     case(GL_RENDERBUFFER):
                         break;
                     default:
-                        log_console->errorStream() << "cudaGraphicsGLRegisterImage() does not support target " << utils::toStringTextureTarget(_target) << " yet (18/10/14) !";
+                       log4cpp::log_console->errorStream() << "cudaGraphicsGLRegisterImage() does not support target " << utils::toStringTextureTarget(_target) << " yet (18/10/14) !";
                         exit(1);
                 }
 
@@ -286,7 +286,7 @@ namespace cuda_gl_interop {
                         break;
                     
                     default:
-                        log_console->errorStream() << "cudaGraphicsGLRegisterImage() does not support internal format " << utils::toStringInternalFormat(_internalFormat) << " yet (18/10/14) !";
+                       log4cpp::log_console->errorStream() << "cudaGraphicsGLRegisterImage() does not support internal format " << utils::toStringInternalFormat(_internalFormat) << " yet (18/10/14) !";
                         exit(1);
                 }
             }

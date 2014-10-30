@@ -17,7 +17,7 @@ class Random {
                 }
                 
                 static int randi(int LO, int HI) {
-                        return LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
+                        return LO + int(static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO))));
                 }
 
                 static qglviewer::Vec randBoxPos(qglviewer::Vec xmin, qglviewer::Vec xmax) {

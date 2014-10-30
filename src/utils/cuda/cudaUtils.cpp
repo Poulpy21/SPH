@@ -103,7 +103,7 @@ void CudaUtils::logCudaDevices(log4cpp::Category &log_output) {
 void gpuAssert(cudaError_t code, const std::string &file, int line, bool abort) {
 	if (code != cudaSuccess) 
 	{
-		log_console->errorStream() << "GPU Assert => " << cudaGetErrorString(code) << " in file " <<  file << ":" << line << ".";
+	log4cpp::log_console->errorStream() << "GPU Assert => " << cudaGetErrorString(code) << " in file " <<  file << ":" << line << ".";
 		if (abort) 
 			std::cout << std::endl;
 			exit(1);
@@ -114,7 +114,7 @@ void checkKernelExecution() {
 		cudaError_t error = cudaGetLastError();
 		if(error != cudaSuccess)
 		{
-			log_console->errorStream() << "Kernel launch failed : " << cudaGetErrorString(error);
+		log4cpp::log_console->errorStream() << "Kernel launch failed : " << cudaGetErrorString(error);
 			std::cout << std::endl;
 			exit(1);
 		}

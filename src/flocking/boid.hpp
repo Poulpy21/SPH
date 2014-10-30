@@ -2,48 +2,33 @@
 #ifndef BOID_H
 #define BOID_H
 
-#include "utils.hpp"
+#include <iostream>
+#include "vec.hpp"
+#include "defines.hpp"
 
-using namespace qglviewer;
-
-template <typename S>
-struct Boid {
-        Boid(Vec x0, Vec v0, Vec a0, float m);
-        virtual ~Boid ();
+#ifdef __CUDACC__
+#define __HOST__ __host__
+#define __DEVICE__ __device__
+#else
+#define __HOST__
+#define __DEVICE__
+#endif 
         
-        static unsigned int globalId;
-        
+struct ALIGN(8) Boid {
         unsigned int id;
         float m;
-
         Vec x, v, a;
-
-        S scheme;
-};
         
-template <typename S>
-unsigned int Boid<S>::globalId = 0;
+        __HOST__ __DEVICE__ Boid(Vec x0, Vec v0, Vec a0, float m);
+        __HOST__ __DEVICE__ Boid(const Boid &b);
+        __HOST__ __DEVICE__ Boid & operator= (const Boid &b);
+        __HOST__ __DEVICE__ ~Boid();
+};
 
-template <typename S>
-std::ostream & operator << (std::ostream &os, Boid<S> &B) {
-    os << "Particule" << std::endl;
-    os << "\tm = " << B.m;
-    os << "\tX = " << B.x;
-    os << "\tV = " << B.v;
-    os << "\tA = " << B.a;
-    os << "\t" << B.scheme;
-    return os;
-}
 
-template <typename S>
-Boid<S>::Boid(Vec x0, Vec v0, Vec a0, float m0) :
-id(0), x(x0), v(v0), a(a0), m(m0) {
-            id = Boid<S>::globalId;
-            Boid<S>::globalId++;
-}
-            
-template <typename S>
-Boid<S>::~Boid() {
-}
+__HOST__ std::ostream & operator << (std::ostream &os, Boid &B);
+        
+#undef __HOST__
+#undef __DEVICE__
 
 #endif /* end of include guard: BOID_H */

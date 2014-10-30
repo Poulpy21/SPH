@@ -4,17 +4,16 @@
 
 #include "schemeIntegrator.hpp"
 
-using namespace qglviewer;
 
 struct LeapfrogStruct {
-    Vec v_old;
+    Vec *v_old;
 };
 
-class LeapFrogScheme : public SchemeIntegrator<LeapfrogStruct> {
+class LeapFrogScheme : public SchemeIntegrator {
     public:
         virtual ~LeapFrogScheme() {};
     protected:
-        LeapFrogScheme(float dt) : SchemeIntegrator<LeapfrogStruct>(dt) {};
+        LeapFrogScheme(float dt) : SchemeIntegrator(dt) {};
 };
 
 #endif /* end of include guard: LEAPFROG_H */

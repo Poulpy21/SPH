@@ -2,8 +2,6 @@
 #ifndef BOIDSYSTEM_H
 #define BOIDSYSTEM_H
 
-#include <vector>
-
 #include "boid.hpp"
 #include "boidGenerator.hpp"
 #include "boidInteraction.hpp"
@@ -12,20 +10,19 @@
 #include "renderTree.hpp"
 #include "log.hpp"
 
-template <typename S>
 class BoidSystem : public RenderTree {
     public:
         explicit BoidSystem(float dt);
         virtual ~BoidSystem();
         
         //Attach a neighbor helper structure to this boid system 
-		void attachNeighborStruct(NeighborStruct<S> *neighborStruct, bool keepAlive=false);
+		void attachNeighborStruct(NeighborStruct *neighborStruct, bool keepAlive=false);
         
         //Attach a scheme integration method to this boid system 
-		void attachSchemeIntegrator(SchemeIntegrator<S> *schemeIntegrator, bool keepAlive=false);
+		void attachSchemeIntegrator(SchemeIntegrator *schemeIntegrator, bool keepAlive=false);
     
         //Add an interaction between boids
-		void addInteraction(BoidInteraction<S> *interaction);
+		void addInteraction(BoidInteraction *interaction);
         
         //Initialize numerical scheme (after all boids have been generated)
         //After this call, numerical simulation can begin.
@@ -36,7 +33,7 @@ class BoidSystem : public RenderTree {
         //Boid system//
         // 
         //Generate 'nBoids' boids with the given generator 'boidGenerator'.
-        void generateBoids(BoidGenerator<S> &boidGenerator, unsigned int nBoids); 
+        void generateBoids(BoidGenerator &boidGenerator, unsigned int nBoids); 
         // 
         //Update attached neighbor structure
         void updateNeighborStructure(); 
@@ -56,9 +53,9 @@ class BoidSystem : public RenderTree {
 	
 		//Boid system//
         
-		NeighborStruct<S>* _neighborStruct;            //Attached helper structure
-		SchemeIntegrator<S>* _schemeIntegrator;        //Attached numerical scheme
-        std::list<BoidInteraction<S>*> _interactions;  //Interactions between boids
+		NeighborStruct* _neighborStruct;            //Attached helper structure
+		SchemeIntegrator* _schemeIntegrator;        //Attached numerical scheme
+        std::list<BoidInteraction*> _interactions;  //Interactions between boids
         
         unsigned int _nBoids; //Current number of generated boids
         float _dt;            //Time step used for the numerical scheme
@@ -77,8 +74,7 @@ class BoidSystem : public RenderTree {
         
 };
         
-template <typename S>
-BoidSystem<S>::BoidSystem(float dt_) :
+BoidSystem::BoidSystem(float dt_) :
 	_neighborStruct(0),
 	_interactions(),
     _nBoids(0),
@@ -91,8 +87,7 @@ BoidSystem<S>::BoidSystem(float dt_) :
         << _nBoids << " boids, dt = " << _dt << "s).";
 }
 
-template <typename S>
-BoidSystem<S>::~BoidSystem() 
+BoidSystem::~BoidSystem() 
 {
 	if(!_keepBoidNeighborStructAlive)
 		delete _neighborStruct;
@@ -100,8 +95,7 @@ BoidSystem<S>::~BoidSystem()
 		delete _schemeIntegrator;
 }
 		
-template <typename S>
-void BoidSystem<S>::attachSchemeIntegrator(SchemeIntegrator<S> *schemeIntegrator, bool keepAlive) {
+void BoidSystem::attachSchemeIntegrator(SchemeIntegrator *schemeIntegrator, bool keepAlive) {
 	assert(schemeIntegrator != 0);
 	if(!_keepBoidSchemeIntegratorAlive && _schemeIntegrator)
 		delete _schemeIntegrator;
@@ -110,8 +104,7 @@ void BoidSystem<S>::attachSchemeIntegrator(SchemeIntegrator<S> *schemeIntegrator
 	_keepBoidSchemeIntegratorAlive = keepAlive;
 }
 
-template <typename S>
-void BoidSystem<S>::attachNeighborStruct(NeighborStruct<S> *neighborStruct, bool keepAlive) {
+void BoidSystem::attachNeighborStruct(NeighborStruct *neighborStruct, bool keepAlive) {
     log_console->infoStream() << "[BoidSystem] Attaching neighbor structure " << neighborStruct->getName() << " !";
 	assert(neighborStruct != 0);
 	if(!_keepBoidNeighborStructAlive && _neighborStruct)
@@ -120,21 +113,18 @@ void BoidSystem<S>::attachNeighborStruct(NeighborStruct<S> *neighborStruct, bool
 	_keepBoidNeighborStructAlive = keepAlive;
 }
         
-template <typename S>
-void BoidSystem<S>::addInteraction(BoidInteraction<S> *interaction) {
+void BoidSystem::addInteraction(BoidInteraction *interaction) {
     log_console->infoStream() << "[BoidSystem] Adding interaction " << interaction->getName() << " !";
 	_interactions.push_back(interaction);
 }
         
-template <typename S>
-void BoidSystem<S>::initScheme() {
+void BoidSystem::initScheme() {
     assert(_schemeIntegrator != 0);
-    _schemeIntegrator->initScheme(_neighborStruct->getBoids());
+    //_schemeIntegrator->initScheme(_neighborStruct->getBoids());
     _schemeInitialized = true;
 }
 
-template <typename S>
-void BoidSystem<S>::step() 
+void BoidSystem::step() 
 {
     if(!_schemeInitialized)
         return;
@@ -147,40 +137,35 @@ void BoidSystem<S>::step()
     log_console->debugStream() << "[BoidSystem] *** End of Step ***";
 }
         
-template <typename S>
-void BoidSystem<S>::generateBoids(BoidGenerator<S> &boidGenerator, unsigned int nBoids) {
+void BoidSystem::generateBoids(BoidGenerator &boidGenerator, unsigned int nBoids) {
 	log_console->debugStream() << "[BoidSystem] Generating " << _nBoids << " boids with generator " << boidGenerator.getName() << " !";
     assert(_neighborStruct != 0);
-	for (unsigned int i = 0; i < nBoids; i++) {
-		_neighborStruct->insertBoid(boidGenerator());
-	}
+	//for (unsigned int i = 0; i < nBoids; i++) {
+		//_neighborStruct->insertBoid(boidGenerator());
+	//}
     _nBoids += nBoids;
 }
 
-template <typename S>
-void BoidSystem<S>::updateNeighborStructure() {
+void BoidSystem::updateNeighborStructure() {
 	log_console->debugStream() << "[BoidSystem] Updating neighbor structure !";
     assert(_neighborStruct != 0);
 	_neighborStruct->update();
 }
         
-template <typename S>
-void BoidSystem<S>::computeForces() {
+void BoidSystem::computeForces() {
 	log_console->debugStream() << "[BoidSystem] Computing forces !";
-	for(BoidInteraction<S> *bi : _interactions) {
+	for(BoidInteraction *bi : _interactions) {
 		bi->computeInteration(_neighborStruct);
 	}
 }
         
-template <typename S>
-void BoidSystem<S>::integrateScheme() {
+void BoidSystem::integrateScheme() {
 	log_console->debugStream() << "[BoidSystem] Integrating scheme !";
     assert(_schemeIntegrator != 0);
-    _schemeIntegrator->integrateScheme(_neighborStruct->getBoids());
+    //_schemeIntegrator->integrateScheme(_neighborStruct->getBoids());
 }
 		
-template <typename S>
-void BoidSystem<S>::drawDownwards(const float *currentTransformationMatrix) {
+void BoidSystem::drawDownwards(const float *currentTransformationMatrix) {
 	log_console->debugStream() << "[BoidSystem] There is nothing to draw !";
 }
 

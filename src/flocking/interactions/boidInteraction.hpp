@@ -7,11 +7,10 @@
 #include "boid.hpp"
 #include "neighborStruct.hpp"
 
-template <typename S>
 class BoidInteraction {
 public:
     virtual ~BoidInteraction() {};
-    virtual float computeInteration(NeighborStruct<S> *neighborStruct) = 0;
+    virtual float computeInteration(NeighborStruct *neighborStruct) = 0;
 	virtual const std::string getName() = 0;
     
 protected:
@@ -25,8 +24,7 @@ private:
     float _r_min, _r_max;
 };
 
-template <typename S>
-ostream &operator<<(ostream &os, BoidInteraction<S> &bi)
+ostream &operator<<(ostream &os, BoidInteraction &bi)
 {
 	os << bi.getName();	
 	return os;

@@ -17,8 +17,6 @@ void checkKernelExecution();
 #include <log4cpp/Category.hh>
 #include "log.hpp"
 
-using namespace log4cpp;
-
 class CudaUtils {
 
 	public:

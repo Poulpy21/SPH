@@ -4,33 +4,33 @@
 
 #include <list>
 #include "boid.hpp"
+#include "boidGroup.hpp"
 
-template <typename S>
 class NeighborStruct {
-public:
-    virtual ~NeighborStruct() {}
-    
-    virtual void insertBoid(Boid<S> *boid) = 0;
-    virtual void removeBoid(unsigned int boidId, Vec helperPosition) {
-        throw new std::runtime_error("Boid removal is not supported in this neighbor structure !");
-    }
-    
-	virtual std::list<Boid<S>*> getBoids() = 0;
-    virtual std::list<Boid<S>*> getNearbyNeighbors(Vec pos, float min_radius, float max_radius) = 0;
+    public:
+        virtual ~NeighborStruct() {}
 
-	virtual void update() = 0;
+        void insertBoidGroup(BoidGroup *boidGroup);
+        void removeBoidGroup(std::string groupName);
 
-	virtual const std::string getName() = 0;
+        BoidGroup* getBoidGroup(std::string groupName);
 
-protected:
-    NeighborStruct() {}
+        virtual std::list<Boid*> getNearbyNeighbors(std::string groupName, Vec pos, float max_radius) = 0;
+
+        virtual void update() = 0;
+
+        virtual const std::string getName() = 0;
+
+    protected:
+        NeighborStruct() {}
+    private:
+        std::map<std::string, BoidGroup*> _boidGroups; 
 };
 
-template <typename S>
-ostream &operator<<(ostream &os, NeighborStruct<S> &ns)
+ostream &operator<<(ostream &os, NeighborStruct &ns)
 {
-	os << ns.getName();	
-	return os;
+    os << ns.getName();	
+    return os;
 }
 
 

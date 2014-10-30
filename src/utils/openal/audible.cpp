@@ -71,17 +71,17 @@ void Audible::setListenerOrientation(const qglviewer::Vec &v1, const qglviewer::
 
 
 void Audible::initOpenALContext() {
-	log_console->infoStream() << "[OpenAL Init]";
+log4cpp::log_console->infoStream() << "[OpenAL Init]";
 		
 	ALboolean enumeration;
 	enumeration = alcIsExtensionPresent(NULL, "ALC_ENUMERATION_EXT");
 	if (enumeration == AL_FALSE) {
-		log_console->infoStream() << "\nEnumerating devices is not supported !";
+	log4cpp::log_console->infoStream() << "\nEnumerating devices is not supported !";
 	}
 	else {
 		const ALCchar *device = alcGetString(NULL, ALC_DEVICE_SPECIFIER);
 		// enumeration supported
-		log_console->infoStream() << "\tDevice list :";
+	log4cpp::log_console->infoStream() << "\tDevice list :";
 		printf("\t\t\t----------\n");
 		printf("\t\t\t%s\n", device);
 		printf("\t\t\t----------\n");
@@ -89,20 +89,20 @@ void Audible::initOpenALContext() {
 	
 	_devices = alcOpenDevice(NULL);
 	if(!_devices) {
-		log_console->errorStream() << "\tFailed to open openAL devices !";
+	log4cpp::log_console->errorStream() << "\tFailed to open openAL devices !";
 		exit(1);
 	}
 	else {
-		log_console->infoStream() << "\tInitialized OpenAL devices !";
+	log4cpp::log_console->infoStream() << "\tInitialized OpenAL devices !";
 	}
 
 	_context = alcCreateContext(_devices, NULL);
 	if (!alcMakeContextCurrent(_context)) {
-		log_console->errorStream() << "\tFailed to initialize openAL context !";
+	log4cpp::log_console->errorStream() << "\tFailed to initialize openAL context !";
 		exit(1);
 	}
 	else {
-		log_console->infoStream() << "\tInitialized an OpenAL context !";
+	log4cpp::log_console->infoStream() << "\tInitialized an OpenAL context !";
 	}
 }
 		

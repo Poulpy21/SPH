@@ -15,13 +15,13 @@ class Renderable
 {
 	public:
 		/// Virtual destructor (mandatory!)
-		virtual ~Renderable() {};
+		virtual ~Renderable() {}
 		
 		/** 
 		 * Initializes a Renderable objet before it is draw.
 		 * Default behavior: nothing is done.
 		 */
-		virtual void init(Viewer&) {};
+		virtual void init(Viewer&) {}
 	
 		/** 
 		 * Draw a Renderable object.
@@ -34,19 +34,19 @@ class Renderable
 		 * Animate an object. This method is invoked before each call of draw().
 		 * Default behavior: nothing is done.
 		 */
-		virtual void animate() {};
+		virtual void animate() {}
 
                 /** 
 		 * Objects can respond to key events.
 		 * Default behavior: nothing is done.
 		 */
-		virtual void keyPressEvent(QKeyEvent*, Viewer&) {};
+		virtual void keyPressEvent(QKeyEvent*, Viewer&) {}
 
                 /** 
 		 * Objects can respond to mouse events.
 		 * Default behavior: nothing is done.
 		 */
-		virtual void mouseMoveEvent(QMouseEvent*, Viewer&) {};
+		virtual void mouseMoveEvent(QMouseEvent*, Viewer&) {}
 };
 
 #endif

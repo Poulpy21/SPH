@@ -6,7 +6,7 @@ L_QGLVIEWER=-lQGLViewer
 endif
 
 ifndef NARCH
-NARCH=11
+NARCH=30
 endif
 
 ####################
@@ -15,15 +15,20 @@ endif
 
 OS=$(shell uname -s)
 
+#############
+## REMINDER #######################################################
+# Penser à utiliser -isystem au lieu de -I pour les lib externes! #
+###################################################################
+
 # Linux ########################################################
 ifeq ($(OS), Linux)
 
 VIEWER_LIBPATH = -L/usr/lib/x86_64-linux-gnu -L/usr/X11R6/lib64 
-VIEWER_INCLUDEPATH = -I/usr/include/Qt -I/usr/include/QtCore -I/usr/include/QtGui -I/usr/share/qt4/mkspecs/linux-g++-64 -I/usr/include/QtOpenGL -I/usr/include/QtXml -I/usr/X11R6/include -I/usr/include/qt4/ $(foreach dir, $(shell ls /usr/include/qt4 | xargs), -I/usr/include/qt4/$(dir))
+VIEWER_INCLUDEPATH = -isystem/usr/include -isystem/usr/share/qt4/mkspecs/linux-g++-64 -isystem/usr/X11R6/include -isystem/usr/include/qt4/ $(foreach dir, $(shell ls /usr/include/qt4 | xargs), -isystem/usr/include/qt4/$(dir))
 VIEWER_LIBS = -lglut -lGLU -lGL -lQtXml -lQtOpenGL -lQtGui -lQtCore -lpthread -lGLEW -lX11 -lXt -lXi -lXmu -lXext
 VIEWER_DEFINES = -D_REENTRANT -DQT_NO_DEBUG -DQT_XML_LIB -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED
 
-CUDA_INCLUDEPATH = -I/usr/local/cuda/include
+CUDA_INCLUDEPATH = -isystem/usr/local/cuda/include
 CUDA_LIBPATH = -L/usr/local/cuda/lib64 -L/usr/local/cuda/lib
 CUDA_LIBS = -lcuda -lcudart -lcudadevrt
 
@@ -44,14 +49,16 @@ endif
 #Compilateurs
 LINK= nvcc
 LDFLAGS= $(L_QGLVIEWER) $(VIEWER_LIBS) -llog4cpp $(CUDA_LIBS) $(OPENAL_LIBS)
-INCLUDE = -Ilocal/include/ -I$(SRCDIR) $(foreach dir, $(call subdirs, $(SRCDIR)), -I$(dir)) $(VIEWER_INCLUDEPATH) $(CUDA_INCLUDEPATH) $(OPENAl_INCLUDEPATH)
+INCLUDE = -I$(SRCDIR) $(foreach dir, $(call subdirs, $(SRCDIR)), -I$(dir)) $(VIEWER_INCLUDEPATH) $(CUDA_INCLUDEPATH) $(OPENAl_INCLUDEPATH)
 LIBS = -Llocal/lib/ $(VIEWER_LIBPATH) $(CUDA_LIBPATH) $(OPENAL_LIBPATH)
 DEFINES= $(VIEWER_DEFINES) $(OPT)
 
-CXX=g++
-CXXFLAGS= -W -Wall -Wextra -Wno-unused-parameter -pedantic -std=c++11 -m64
-#-Wshadow -Wstrict-aliasing -Weffc++ -Werror
-NVCCFLAGS= -Xcompiler -Wall -m64 -arch sm_$(NARCH) --relocatable-device-code true
+WERR= -Weverything -Wall -Wextra -Wbad-function-cast -Wdeclaration-after-statement -Wmissing-format-attribute -Wmissing-noreturn -Wnested-externs -Wold-style-definition -Wredundant-decls -Wsequence-point -Wstrict-prototypes -Wswitch-default -Weffc++ -Wexit-time-destructors -Wglobal-constructors -Wcovered-switch-default -Wmissing-variable-declarations -Wmissing-prototypes -Wdeprecated -Wunreachable-code  -Wsign-conversion -Wold-style-cast 
+WNOERR= -Wno-weak-vtables -Wno-c++98-compat-pedantic -Wno-unused-parameter -Wno-deprecated-register -Wno-conversion -Wno-shadow -Wno-padded
+
+CXX=clang
+CXXFLAGS= -std=c++11 -m64 $(WERR) $(WNOERR)
+NVCCFLAGS= -arch sm_$(NARCH) --relocatable-device-code true -Xcompiler="-m64 -Wall -Wextra -Wno-unused-parameter"
 
 ifeq ($(LINK), nvcc)
 LINKFLAGS=$(NVCCFLAGS)

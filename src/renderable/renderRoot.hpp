@@ -7,9 +7,9 @@
 class RenderRoot : public RenderTree {
 	
 	public:
-		explicit RenderRoot(bool active = true) : RenderTree(active) {};
+		explicit RenderRoot(bool active = true) : RenderTree(active) {}
 
-		~RenderRoot() {};
+		~RenderRoot() {}
 		
 		void drawDownwards(const float *currentTransformationMatrix = consts::identity4);
 };

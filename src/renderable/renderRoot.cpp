@@ -21,7 +21,7 @@ void RenderRoot::drawDownwards(const float *currentTransformationMatrix) {
 
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 3; j++) {
-				vectors[i][j] = (GLfloat) vec[i][j];
+				vectors[i][j] = vec[i][j];
 			}
 			vectors[i][3] = 0;
 		}

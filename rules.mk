@@ -50,7 +50,7 @@ $(OBJDIR)%.cpp.o : $(SRCDIR)%.cpp
 
 $(OBJDIR)%.cu.o: $(SRCDIR)%.cu
 	@echo
-	$(NVCC) $(INCLUDE) -o $@ -c $^ $(NVCCFLAGS) $(DEFINES)
+	$(NVCC) $(subst isystem,I,$(INCLUDE)) -o $@ -c $^ $(NVCCFLAGS) $(DEFINES)
 
 
 # "-" pour enlever les messages d'erreurs

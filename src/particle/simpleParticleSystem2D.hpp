@@ -32,7 +32,7 @@ class SimpleParticleSystem2D : public ParticleSystem<2u> {
         const float _P_0   = 0.5;     // pressure constant
         const float _g     = 9.81f;   // acceleration of gravity
         const float _nu    = 0.01f;   // dynamic viscosity
-        const float _k_0   = 8;       // initial motion damping
+        //const float _k_0   = 8;       // initial motion damping
         const float _k     = 1;       // motion damping
 
         const float _w = 2.0f;

@@ -11,11 +11,12 @@
 
 #include "program.hpp"
 
-using namespace cuda_gl_interop;
 
 namespace MarchingCubes {
 
     class MarchingCubes : public RenderTree {
+
+        using SharedSurfaceResource = cuda_gl_interop::SharedSurfaceResource;
 
         public:
             explicit MarchingCubes(
@@ -52,8 +53,6 @@ namespace MarchingCubes {
             //3D Surfaces
             SharedSurfaceResource *_densitiesSurfaceResource, *_normalsSurfaceResource;
             cudaSurfaceObject_t _densitiesSurfaceObject, _normalsSurfaceObject;
-
-            SharedBufferResource *_test1, *_test2;
 
             //VBOs
             unsigned int _trianglesVBO, _normalsVBO;

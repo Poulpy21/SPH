@@ -28,8 +28,6 @@ Viewer *Globals::viewer = 0;
 unsigned int Globals::projectionViewUniformBlock = 0;
 
 float Globals::dt = 0.1;
-Vec Globals::pos = Vec(0, 0, 0);
-Vec Globals::offset = Vec(0, 0, 0);
 
 void Globals::init() {
 
@@ -57,7 +55,7 @@ void Globals::init() {
         glBufferData(GL_UNIFORM_BUFFER, (16+16+4+4+4+4)*sizeof(GLfloat), 0, GL_DYNAMIC_DRAW);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-        log_console->infoStream() << "[Globals init]";
+       log4cpp::log_console->infoStream() << "[Globals init]";
 }
 
 void Globals::check() {

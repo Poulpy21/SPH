@@ -25,8 +25,7 @@
 
 #include "sharedSurfaceResource.hpp"
 
-#include "boidSystem.hpp"
-#include "serialLeapfrogScheme.hpp"
+#include "vec.hpp"
 
 using namespace log4cpp;
 using namespace cuda_gl_interop;
@@ -38,12 +37,12 @@ int main(int argc, char** argv) {
         log_console->infoStream() << "[Logs Init] ";
         
         //random
-        srand(time(NULL));
+        srand(static_cast<unsigned int>(time(NULL)));
         log_console->infoStream() << "[Rand Init] ";
 
         //cuda
-        log_console->infoStream() << "[CUDA Init] ";
-        CudaUtils::logCudaDevices(*log_console);
+        //log_console->infoStream() << "[CUDA Init] ";
+        //CudaUtils::logCudaDevices(*log_console);
 
         // glut initialisation (mandatory) 
         glutInit(&argc, argv);
@@ -92,9 +91,6 @@ int main(int argc, char** argv) {
         RenderRoot *root = new RenderRoot(); 
         viewer->addRenderable(root);
 
-        MarchingCubes::MarchingCubes *MC = new MarchingCubes::MarchingCubes(0.0f,0.0f,0.0f,1024u,512u,256u,0.1f);
-        root->addChild("Marching Cube", MC);
-        
         //Run main loop.
         application.exec();
 
@@ -102,8 +98,5 @@ int main(int argc, char** argv) {
         alutExit();
         
         return EXIT_SUCCESS;
-
-        ParticleSystem<2> *system = new SimpleParticleSystem2D(1000u, 0.001f);
-        root->addChild("SPH_ParticleSystem", system);
 }
 

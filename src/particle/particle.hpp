@@ -10,23 +10,29 @@ class Particle {
         Particle(float x0[N], float v0[N], float a0[N],
                 float m, float rho, float dh);
 
+        Particle(const Particle &P);
         virtual ~Particle ();
 
+        const float* x() const;
+        const float* v() const;
+        const float* a() const;
+        const float* v_old() const;
+        float m() const;
+        float rho() const;
+        float P() const;
+        unsigned int i() const;
+        unsigned int j() const;
+        unsigned int id() const;
+        
         float* x();
         float* v();
         float* a();
         float* v_old();
-
         float& m();
         float& rho();
         float& P();
-
-        unsigned int i() const;
-        unsigned int j() const;
         unsigned int & i();
         unsigned int & j();
-
-        unsigned int id() const;
 
     private:
         float _x[N], _v[N], _a[N];
@@ -70,10 +76,37 @@ Particle<N>::Particle(float x_[N], float v_[N], float a_[N],
         _v_old[i] = 0;
     }
 }
+        
+template <unsigned int N>
+Particle<N>::Particle(const Particle &P) {
+    this->_m = P.m();
+    this->_rho = P.rho();
+    this->_i = P.i();
+    this->_j = P.j();
+    this->_id = P.id();
+    for (unsigned int i = 0; i < N; i++) {
+        this->_x[i] = P.x()[i];
+        this->_v[i] = P.v()[i];
+        this->_a[i] = P.a()[i];
+        this->_v_old[i] = P.v_old()[i];
+    }
+}
 
 template <unsigned int N>
 Particle<N>::~Particle() {
 }
+
+template <unsigned int N>
+const float* Particle<N>::x() const { return _x; }
+
+template <unsigned int N>
+const float* Particle<N>::v() const { return _v; }
+
+template <unsigned int N>
+const float* Particle<N>::a() const { return _a; }
+
+template <unsigned int N>
+const float* Particle<N>::v_old() const { return _v_old; }
 
 template <unsigned int N>
 float* Particle<N>::x() { return _x; }
@@ -86,6 +119,15 @@ float* Particle<N>::a() { return _a; }
 
 template <unsigned int N>
 float* Particle<N>::v_old() { return _v_old; }
+
+template <unsigned int N>
+float Particle<N>::m() const { return _m; }
+
+template <unsigned int N>
+float Particle<N>::rho() const { return _rho; }
+
+template <unsigned int N>
+float Particle<N>::P() const { return _P; }
 
 template <unsigned int N>
 float& Particle<N>::m() { return _m; }

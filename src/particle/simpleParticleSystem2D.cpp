@@ -14,7 +14,7 @@ SimpleParticleSystem2D::SimpleParticleSystem2D(unsigned int nParticles_, float d
     _domainVBO(0),
     _particlePositions(0)
 {
-    log_console->infoStream() << "[ParticleSystem] Creating a new simple particle system 2D (" 
+    log4cpp::log_console->infoStream() << "[ParticleSystem] Creating a new simple particle system 2D (" 
         << _nParticles << " particles, dt = " << _dt << "s).";
     initParticles();
     computeInitialEulerStep();
@@ -55,7 +55,7 @@ SimpleParticleSystem2D::~SimpleParticleSystem2D() {
 
 void SimpleParticleSystem2D::initParticles() 
 {
-    log_console->infoStream() << "[ParticleSystem] Creating particles...";
+    log4cpp::log_console->infoStream() << "[ParticleSystem] Creating particles...";
 
     float x[2],v[2],a[2];
     for (unsigned int i = 0; i < _nParticles; i++) {
@@ -74,7 +74,7 @@ void SimpleParticleSystem2D::initParticles()
 
 void SimpleParticleSystem2D::updateGrid() 
 {
-    log_console->debugStream() << "[ParticleSystem] Updating Neighbor Grid...";
+    log4cpp::log_console->debugStream() << "[ParticleSystem] Updating Neighbor Grid...";
     for (unsigned i = 0; i < _gridHeight; i++) {
         for (unsigned j = 0; j < _gridWidth; j++) {
             _neighborGrid[i][j].clear();
@@ -88,8 +88,8 @@ void SimpleParticleSystem2D::updateGrid()
 
 void SimpleParticleSystem2D::computeAccelerations() 
 {
-    log_console->debugStream() << "[ParticleSystem] Computing accelerations...";
-    
+    log4cpp::log_console->debugStream() << "[ParticleSystem] Computing accelerations...";
+
     int i, j;
     bool print = true;
 
@@ -114,15 +114,17 @@ void SimpleParticleSystem2D::computeAccelerations()
                 }
             }
         }
-        
+
         p.P() = _P_0*(powf(p.rho()/_rho_0, 7) - 1); 
-    
-        if(print && __PRINT) {
+
+#ifdef __PRINT
+        if(print) {
             std::cout << "RHO="<<p.rho() << "\tRHO/RHO0=" << p.rho()/_rho_0  << "\t" << "P=" << p.P() << std::endl;
             print = false;
         }
+#endif
     }
-  
+
     float X0,X1,V0,V1;
     float dP, dPx, dPy;
     float d2V, d2Vx, d2Vy;
@@ -130,14 +132,15 @@ void SimpleParticleSystem2D::computeAccelerations()
     print = true;
 
     for(Particle<2u> &p : _particles) {
-        
+
         i = p.i();
         j = p.j();
 
         dPx = 0.0f;
         dPy = 0.0f;
         d2Vx = 0.0f;
-                    
+        d2Vy = 0.0f;
+
         for (int di = -1; di <= 1; di++) {
             for (int dj = -1; dj <= 1; dj++) {
                 if(i+di >= int(_gridHeight) || i+di < 0 || j+dj >= int(_gridWidth) || j+dj < 0)
@@ -156,7 +159,7 @@ void SimpleParticleSystem2D::computeAccelerations()
 
                     dPx += dP*D_Wx(p.x(),n->x());
                     dPy += dP*D_Wy(p.x(),n->x());
-                   
+
                     d2V = 2*n->m()/n->rho() 
                         *(X0*D_Wx(p.x(),n->x()) + X1*D_Wy(p.x(),n->x())) 
                         /(X0*X0 + X1*X1 + 0.01f*_dh*_dh);
@@ -164,7 +167,8 @@ void SimpleParticleSystem2D::computeAccelerations()
                     d2Vx += V0*d2V;
                     d2Vy += V1*d2V;
 
-                    if(print && __PRINT) {
+#ifdef __PRINT
+                    if(print) {
                         std::cout << "Particle " << n << " is a friend !" << n->x()[0] << "," << n->x()[1] << std::endl;
                         printf("W = %f\n",W(p.x(),n->x()));
                         printf("(D_Wx,D_Wy)=(%f,%f)\n",D_Wx(p.x(),n->x()),D_Wy(p.x(),n->x()));
@@ -172,6 +176,7 @@ void SimpleParticleSystem2D::computeAccelerations()
                         printf("(dPx,dPy)=(%f,%f)\n",dPx,dPy);
                         printf("(d2Vx,d2Vz)=(%f,%f)\n",d2Vx,d2Vy);
                     }
+#endif
                 }
             }
         }
@@ -179,7 +184,7 @@ void SimpleParticleSystem2D::computeAccelerations()
         //reset
         p.a()[0] = 0.0f;
         p.a()[1] = 0.0f;
-        
+
         //acceleration due to pressure
         //p.a()[0] += -dPx;
         //p.a()[1] += -dPy;
@@ -195,8 +200,9 @@ void SimpleParticleSystem2D::computeAccelerations()
         //damping
         p.a()[0] += -_k*p.v()[0];
         p.a()[1] += -_k*p.v()[1];
-            
-        if (print && __PRINT) {
+
+#ifdef __PRINT
+        if(print) {
             printf("Pressure Gradient \t(dPx,dPy)=(%f,%f)\n",dPx,dPy);
             printf("Velocity Laplacian \t(d2Vx,d2Vy)=(%f,%f)\n",d2Vx,d2Vy);
             printf("Pressure Acceleration \t(Apx,Apy)=(%f,%f)\n", 1/p.rho()*dPx, 1/p.rho()*dPy);
@@ -204,17 +210,18 @@ void SimpleParticleSystem2D::computeAccelerations()
             printf("Gravity Acceleration \t(Agx,Agy)=(%f,%f)\n", 0.0f, -_g);
             print=false;
         }
+#endif
     }
 }
 
 void SimpleParticleSystem2D::computeSpatialInteractions() 
 {
-    log_console->debugStream() << "[ParticleSystem] Computing spatial interactions...";
+    log4cpp::log_console->debugStream() << "[ParticleSystem] Computing spatial interactions...";
 }
 
 void SimpleParticleSystem2D::integrateScheme() 
 {
-    log_console->debugStream() << "[ParticleSystem] Integrating Scheme...";
+    log4cpp::log_console->debugStream() << "[ParticleSystem] Integrating Scheme...";
     float v_halfStepX, v_halfStepY;
 
     bool print = true;
@@ -222,22 +229,24 @@ void SimpleParticleSystem2D::integrateScheme()
         v_halfStepX = p.v_old()[0] + _dt*p.a()[0];        
         v_halfStepY = p.v_old()[1] + _dt*p.a()[1];        
 
-        p.x()[0] = max(0.0f,min(_w,p.x()[0] + _dt*v_halfStepX));
-        p.x()[1] = max(0.0f,min(_h,p.x()[1] + _dt*v_halfStepY));
-        
+        p.x()[0] = std::max(0.0f,std::min(_w,p.x()[0] + _dt*v_halfStepX));
+        p.x()[1] = std::max(0.0f,std::min(_h,p.x()[1] + _dt*v_halfStepY));
+
         p.i() = ceil(p.x()[1])/(2*_dh);
         p.j() = ceil(p.x()[0])/(2*_dh);
-        
+
         p.v()[0] = 1/2.0f*(p.v_old()[0] + v_halfStepX);
         p.v()[1] = 1/2.0f*(p.v_old()[1] + v_halfStepY);
 
-        if (print && __PRINT) {
+#ifdef __PRINT
+        if(print) {
             printf("(X',Y')=(%f,%f)\n", p.x()[0], p.x()[1]);
             printf("(Vx',Vy')=(%f,%f)\n", p.v()[0], p.v()[1]);
             printf("(Ax',Ay')=(%f,%f)\n", p.a()[0], p.a()[1]);
             print = false;
         }
-        
+#endif
+
         p.v_old()[0] = v_halfStepX;
         p.v_old()[1] = v_halfStepY;
     }
@@ -245,7 +254,7 @@ void SimpleParticleSystem2D::integrateScheme()
 
 void SimpleParticleSystem2D::drawDownwards(const float *currentTransformationMatrix) 
 {
-    log_console->debugStream() << "[ParticleSystem] Drawing...";
+    log4cpp::log_console->debugStream() << "[ParticleSystem] Drawing...";
     drawDomain();
     drawParticles();
 }
@@ -325,7 +334,7 @@ void SimpleParticleSystem2D::makeGrid() {
     _gridWidth = ceil(_w/(2*_dh)) + 1;
     _gridHeight = ceil(_h/(2*_dh)) + 1;
 
-    log_console->infoStream() << "[ParticleSystem] Grid Dimension is " << utils::toStringDimension(_gridWidth, _gridHeight, 0u) << ".";
+    log4cpp::log_console->infoStream() << "[ParticleSystem] Grid Dimension is " << utils::toStringDimension(_gridWidth, _gridHeight, 0u) << ".";
 
     _neighborGrid = new std::vector<Particle<2u>*>*[_gridHeight];
     for (unsigned int i = 0; i < _gridHeight; i++) {
@@ -335,7 +344,7 @@ void SimpleParticleSystem2D::makeGrid() {
 
 float SimpleParticleSystem2D::cubicSpline(float q) {
     float r;
-    
+
     if(q >= 0.0f && q < 1.0f) 
         r = 2.0f/3.0f - q*q + 1/2.0f*q*q*q;
     else if (q >= 1.0f && q < 2.0f)

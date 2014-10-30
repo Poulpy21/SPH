@@ -15,7 +15,7 @@ namespace cuda_gl_interop {
             virtual ~SharedBufferResource() {
                 glDeleteBuffers(1, &(this->_glResource));
                 _device_ptr = 0;
-            };
+            }
             
             unsigned int getBufferID() {
                 return this->getGlResource();

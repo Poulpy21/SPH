@@ -8,7 +8,6 @@
 #include <string>
 
 #include <QGLViewer/vec.h>
-using namespace qglviewer;  // to use class Vec of the qglviewer lib
 
 struct modelViewUniformBlock {
 	GLfloat projectionMatrix[16];
@@ -20,6 +19,8 @@ struct modelViewUniformBlock {
 };
 
 class Globals {
+
+    using Vec = qglviewer::Vec;
 
 	public:
 		static void init();
@@ -49,8 +50,6 @@ class Globals {
 
         // Current position
         static float dt;
-        static Vec pos;
-        static Vec offset;
 };
 	
 #endif /* end of include guard: GLOBALS_H */

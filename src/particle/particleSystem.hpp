@@ -33,7 +33,7 @@ class ParticleSystem : public RenderTree {
 
     private: 
         void step();
-		void animateDownwards() { step(); };
+		void animateDownwards() { step(); }
         
 };
         
@@ -42,7 +42,7 @@ ParticleSystem<N>::ParticleSystem(unsigned int nParticles_, float dt_) :
     _nParticles(nParticles_),
     _dt(dt_)
 {
-    log_console->infoStream() << "[ParticleSystem] Creating a new particle system (" 
+    log4cpp::log_console->infoStream() << "[ParticleSystem] Creating a new particle system (" 
         << _nParticles << " particles, dt = " << _dt << "s).";
 }
 
@@ -54,19 +54,19 @@ ParticleSystem<N>::~ParticleSystem()
 template <unsigned int N>
 void ParticleSystem<N>::step() 
 {
-    log_console->debugStream() << "[ParticleSystem] *** Step ***";
+    log4cpp::log_console->debugStream() << "[ParticleSystem] *** Step ***";
     std::cout << _particles[0] << std::endl;
     this->updateGrid();
     this->computeAccelerations();
     this->computeSpatialInteractions();
     this->integrateScheme();
-    log_console->debugStream() << "[ParticleSystem] *** End of Step ***";
+    log4cpp::log_console->debugStream() << "[ParticleSystem] *** End of Step ***";
 }
 
 template <unsigned int N>
 void ParticleSystem<N>::computeInitialEulerStep() 
 {
-    log_console->infoStream() << "[ParticleSystem] Computing initial Euler step...";
+    log4cpp::log_console->infoStream() << "[ParticleSystem] Computing initial Euler step...";
     for (Particle<N> &p : _particles) {
         for (unsigned int i = 0; i < N; i++) {
             p.v_old()[i] = p.v()[i] - 0.5f*_dt*p.a()[i];

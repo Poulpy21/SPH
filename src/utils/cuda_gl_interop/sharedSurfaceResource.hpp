@@ -23,7 +23,7 @@ namespace cuda_gl_interop {
             {
             }
             
-            virtual ~SharedSurfaceResource() {};
+            virtual ~SharedSurfaceResource() {}
 
             cudaSurfaceObject_t createSurfaceObject(unsigned int arrayIndex, unsigned int mipLevel) {
                 

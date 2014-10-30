@@ -22,17 +22,17 @@ namespace MarchingCubes {
         _trianglesProgram("slices")
     {
 
-        log_console->infoStream() << "[MarchingCube] Created a " << utils::toStringDimension(W_,H_,L_) << " Marching Cube with h=" << h_ << ", real size " << utils::toStringVec3(_Wf,_Hf,_Lf) << ".";
+       log4cpp::log_console->infoStream() << "[MarchingCube] Created a " << utils::toStringDimension(W_,H_,L_) << " Marching Cube with h=" << h_ << ", real size " << utils::toStringVec3(_Wf,_Hf,_Lf) << ".";
 
         int cudaDevices[10];
         unsigned int nCudaDevices;
         CHECK_CUDA_ERRORS(cudaGLGetDevices(&nCudaDevices, cudaDevices, 10, cudaGLDeviceListAll));
-        log_console->infoStream() << "Found " << nCudaDevices << " CUDA devices corresponding to the current OpenGL context :";
+       log4cpp::log_console->infoStream() << "Found " << nCudaDevices << " CUDA devices corresponding to the current OpenGL context :";
         for (unsigned int i = 0; i < nCudaDevices; i++) {
-            log_console->infoStream() << "\tDevice " << cudaDevices[i];
+           log4cpp::log_console->infoStream() << "\tDevice " << cudaDevices[i];
         }
 
-        log_console->infoStream() << "Setting current CUDA device to " << cudaDevices[0] << " !";
+       log4cpp::log_console->infoStream() << "Setting current CUDA device to " << cudaDevices[0] << " !";
 
         cudaThreadExit();
         cudaSetDevice(cudaDevices[0]);

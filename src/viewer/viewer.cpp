@@ -9,7 +9,7 @@ Viewer::Viewer() {
 
 Viewer::~Viewer()
 {
-    list<Renderable *>::iterator it;
+    std::list<Renderable *>::iterator it;
     for (it = renderableList.begin(); it != renderableList.end(); ++it) {
         delete(*it);
     }
@@ -47,7 +47,7 @@ void Viewer::init()
 	//TODO
     //setAnimationPeriod(20); // 50Hz
 
-    list<Renderable *>::iterator it;
+    std::list<Renderable *>::iterator it;
     for (it = renderableList.begin(); it != renderableList.end(); ++it) {
         (*it)->init(*this);
     }
@@ -57,7 +57,7 @@ void Viewer::init()
 void Viewer::draw()
 { 
     // draw every objects in renderableList
-    list<Renderable *>::iterator it;
+    std::list<Renderable *>::iterator it;
     for(it = renderableList.begin(); it != renderableList.end(); ++it) {
         (*it)->draw();
     }
@@ -69,7 +69,7 @@ void Viewer::draw()
 void Viewer::animate()
 {
     // animate every objects in renderableList
-    list<Renderable *>::iterator it;
+    std::list<Renderable *>::iterator it;
     for(it = renderableList.begin(); it != renderableList.end(); ++it) {
         (*it)->animate();
     }
@@ -83,7 +83,7 @@ void Viewer::animate()
 void Viewer::mouseMoveEvent(QMouseEvent *e)
 {
     // all renderables may respond to key events
-    list<Renderable *>::iterator it;
+    std::list<Renderable *>::iterator it;
     for(it = renderableList.begin(); it != renderableList.end(); ++it) {
         (*it)->mouseMoveEvent(e, *this);
     }
@@ -99,7 +99,7 @@ void Viewer::keyPressEvent(QKeyEvent *e)
     const Qt::KeyboardModifiers modifiers = e->modifiers();
 
     // all renderables may respond to key events
-    list<Renderable *>::iterator it;
+    std::list<Renderable *>::iterator it;
     for(it = renderableList.begin(); it != renderableList.end(); ++it) {
         (*it)->keyPressEvent(e, *this);
     }

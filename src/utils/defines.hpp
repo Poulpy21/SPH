@@ -1,7 +1,6 @@
 
 //le flag debug est passé avec make debug mais on le met
 //par defaut pour le moment
-
 #ifndef _DEBUG_LEVEL 
 #define _DEBUG_LEVEL 0
 #endif
@@ -29,3 +28,14 @@ do {\
 #define CHECK_OPENGL_ERRORS() 
 #define PRINTD(...)
 #endif
+
+#if defined(__CUDACC__) // NVCC
+   #define ALIGN(n) __align__(n)
+#elif defined(__GNUC__) // GCC
+  #define ALIGN(n) __attribute__((aligned(n)))
+#elif defined(_MSC_VER) // MSVC
+  #define ALIGN(n) __declspec(align(n))
+#else
+  #error "Please provide a definition for ALIGN macro for your host compiler (in utils/defines.hpp) !"
+#endif
+

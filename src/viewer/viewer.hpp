@@ -12,7 +12,6 @@
 
 #include <QGLViewer/qglviewer.h>
 #include <list>
-using namespace std;
 
 class Renderable;
 
@@ -27,7 +26,7 @@ class Viewer : public QGLViewer
 /* Scene methods */
 	protected :
 		/// List of the scene objects, to render, animate, ...
-		list<Renderable *> renderableList;
+        std::list<Renderable *> renderableList;
 		
 		/// Create the scene and initializes rendering parameters
 		virtual void init();
