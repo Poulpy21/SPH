@@ -17,19 +17,19 @@ OS=$(shell uname -s)
 
 #############
 ## REMINDER #########################################################
-# - Penser à utiliser -isystem au lieu de -I pour les lib externes! #
-# - Nvcc support experimental du c++11 à tester...                  #
+# - Penser à utiliser -isystem  au lieu de -I pour les lib externes! #
+# - Nvcc support experimental du c++11 ...                          #
 #####################################################################
 
 # Linux ########################################################
 ifeq ($(OS), Linux)
 
 VIEWER_LIBPATH = -L/usr/lib/x86_64-linux-gnu -L/usr/X11R6/lib64 
-VIEWER_INCLUDEPATH = -isystem/usr/include -isystem/usr/share/qt4/mkspecs/linux-g++-64 -isystem/usr/X11R6/include -isystem/usr/include/qt4/ $(foreach dir, $(shell ls /usr/include/qt4 | xargs), -isystem/usr/include/qt4/$(dir))
+VIEWER_INCLUDEPATH = -isystem /usr/include -isystem /usr/share/qt4/mkspecs/linux-g++-64 -isystem /usr/X11R6/include -isystem /usr/include/qt4/ $(foreach dir, $(shell ls /usr/include/qt4 | xargs), -isystem /usr/include/qt4/$(dir))
 VIEWER_LIBS = -lglut -lGLU -lGL -lQtXml -lQtOpenGL -lQtGui -lQtCore -lpthread -lGLEW -lX11 -lXt -lXi -lXmu -lXext
 VIEWER_DEFINES = -D_REENTRANT -DQT_NO_DEBUG -DQT_XML_LIB -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED
 
-CUDA_INCLUDEPATH = -isystem/usr/local/cuda/include
+CUDA_INCLUDEPATH = -isystem /usr/local/cuda/include
 CUDA_LIBPATH = -L/usr/local/cuda/lib64 -L/usr/local/cuda/lib
 CUDA_LIBS = -lcuda -lcudart -lcudadevrt
 
@@ -54,12 +54,24 @@ INCLUDE = -I$(SRCDIR) $(foreach dir, $(call subdirs, $(SRCDIR)), -I$(dir)) $(VIE
 LIBS = -Llocal/lib/ $(VIEWER_LIBPATH) $(CUDA_LIBPATH) $(OPENAL_LIBPATH)
 DEFINES= $(VIEWER_DEFINES) $(OPT)
 
-WERR= -Wall -Wextra -Wmissing-format-attribute -Wmissing-noreturn -Wredundant-decls -Wsequence-point -Wswitch-default -Wdeprecated -Wunreachable-code  -Wsign-conversion -Wold-style-cast -Wcovered-switch-default -Wmissing-variable-declarations -Wfloat-equal -Wdouble-promotion -Wsuggest-attribute
-WNOERR= -Wno-weak-vtables -Wno-c++98-compat-pedantic -Wno-unused-parameter -Wno-deprecated-register -Wno-conversion -Wno-shadow -Wno-padded -Wno-global-constructors -Wno-exit-time-destructors -Wno-source-uses-openmp -Wno-unknown-warning-option -Wno-effc++
+CXX=g++
 
-CXX=clang
-CXXFLAGS= -std=c++11 -m64 -fopenmp $(WERR) $(WNOERR)
-NVCCFLAGS= -arch sm_$(NARCH) --relocatable-device-code true -Xcompiler="-fopenmp -m64 -Wall -Wextra -Wno-unused-parameter"
+CLANG_WERR= -Wall -Wextra -Wmissing-format-attribute -Wmissing-noreturn -Wredundant-decls -Wsequence-point -Wswitch-default -Wdeprecated -Wunreachable-code  -Wsign-conversion -Wold-style-cast -Wcovered-switch-default -Wmissing-variable-declarations -Wfloat-equal -Wunknown-warning-option
+CLANG_WNOERR= -Wno-weak-vtables -Wno-c++98-compat-pedantic -Wno-unused-parameter -Wno-deprecated-register -Wno-conversion -Wno-shadow -Wno-padded -Wno-global-constructors -Wno-exit-time-destructors -Wno-source-uses-openmp -Wno-effc++
+
+GCC_WERR= -Wall -Wextra -Wmissing-format-attribute -Wmissing-noreturn -Wredundant-decls -Wsequence-point -Wdeprecated -Wunreachable-code -Wold-style-cast -Wfloat-equal -Wsuggest-attribute=const -Wsuggest-attribute=pure
+GCC_WNOERR= -Wno-unused-parameter -Wno-conversion -Wno-shadow -Wno-padded -Wno-effc++ -Wno-double-promotion -Wno-sign-conversion
+
+CLANG_FLAGS= -std=c++11 -m64 -fopenmp $(CLANG_WERR) $(CLANG_WNOERR)
+GCC_FLAGS= -std=c++11 -m64 -fopenmp $(GCC_WERR) $(GCC_WNOERR)
+
+ifeq ($(CXX), clang)
+	CXXFLAGS=$(CLANG_FLAGS)
+else
+	CXXFLAGS=$(GCC_FLAGS)
+endif
+
+NVCCFLAGS= -arch sm_$(NARCH) --relocatable-device-code true -std=c++11 -Xcompiler="-Wall -Wextra -Wno-unused-parameter -m64 -fopenmp"
 
 ifeq ($(LINK), nvcc)
 LINKFLAGS=$(NVCCFLAGS)

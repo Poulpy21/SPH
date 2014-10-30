@@ -37,10 +37,10 @@ $(TARGET): $(MOCOUTPUT) $(OBJ) $(SRC)
 	$(LINK) $(LIBS) $(OBJ) -o $@ $(LDFLAGS) $(LINKFLAGS) $(DEFINES)
 	@echo
 
-#QT macro preprocessor
+#QT preprocessor
 $(SRCDIR)%.moc : $(SRCDIR)%.hpp
-	@echo
 	$(MOC) $(INCLUDE) $(DEFINES) -o $@ -i $^ $(MOCFLAGS)
+	@echo
 ################
 
 
@@ -50,7 +50,7 @@ $(OBJDIR)%.cpp.o : $(SRCDIR)%.cpp
 
 $(OBJDIR)%.cu.o: $(SRCDIR)%.cu
 	@echo
-	$(NVCC) $(subst isystem,I,$(INCLUDE)) -o $@ -c $^ $(NVCCFLAGS) $(DEFINES)
+	$(NVCC) $(INCLUDE) -o $@ -c $^ $(NVCCFLAGS) $(DEFINES)
 
 
 # "-" pour enlever les messages d'erreurs

@@ -21,7 +21,6 @@ namespace log4cpp {
 	Category *log_console = &Category::getRoot();
 	Category *log_file = &Category::getInstance(std::string("log_file"));
 
-    void initLogs();
 	void initLogs() {
 
 		log_console->setPriority(Priority::_CONSOLE_LOG_LEVEL);

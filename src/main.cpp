@@ -27,9 +27,23 @@
 #include "sharedSurfaceResource.hpp"
 
 #include "vec.hpp"
+#include "simplyLinkedList.hpp"
+
+#include <atomic>
 
 using namespace log4cpp;
 using namespace cuda_gl_interop;
+    
+void printList(List<char>* list) {
+    Node<char>* node = list->first; 
+    unsigned int count = 0;
+    while(node != 0 && node->data != 0) {
+        std::cout << *(node->data);
+        count++;
+        node = node->next;
+    }
+    std::cout << " ("<< count << " caracters)" << std::endl;
+}
 
 int main(int argc, char** argv) {
 
@@ -74,7 +88,6 @@ int main(int argc, char** argv) {
     Texture::init();
 
     //FIN INIT//
-
     log_console->infoStream() << "";
     log_console->infoStream() << "Data size check :"; // !! GL_BYTE != Glbyte !!
     log_console->infoStream() << "\tSizeOf(GLboolean) = " << sizeof(GLboolean);
@@ -87,15 +100,24 @@ int main(int argc, char** argv) {
     log_console->infoStream() << "";
     log_console->infoStream() << "Running with OpenGL " << Globals::glVersion << " and glsl version " << Globals::glShadingLanguageVersion << " !";
     log_console->infoStream() << "";
-    
-    omp_set_num_threads(2);
-#pragma omp parallel for
+
+    List<char> *list = new List<char>();
+    std::string str("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+
+#pragma omp parallel shared(list, str)
 {
-    for(int n=0; n<100; ++n) {
-        int this_thread = omp_get_thread_num();
-        std::cout << "Hello from thread " << this_thread << " !" << std::endl;
+    #pragma omp for
+    for(unsigned int i=0; i<100*str.length();i++) {
+        list->push_back(&str[i%str.length()]);
+    }
+    
+    #pragma omp master 
+    {
+        printList(list);
     }
 }
+
+    std::cout << sizeof(std::atomic<int>) << std::endl;
 
     //RenderRoot *root = new RenderRoot(); 
     //viewer->addRenderable(root);
