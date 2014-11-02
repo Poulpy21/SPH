@@ -18,7 +18,10 @@ struct Node {
     T *data;
     Node<T> *next;
 
+    __HOST__ __DEVICE__ Node();
     __HOST__ __DEVICE__ Node(T *data, Node *next);
+    __HOST__ __DEVICE__ Node(const Node<T> &node);
+    __HOST__ __DEVICE__ Node<T>& operator= (const Node<T> &node);
     __HOST__ __DEVICE__ ~Node();
 };
 
@@ -32,6 +35,8 @@ struct List {
     unsigned int nReaders;
 
     __HOST__ __DEVICE__ List();
+    __HOST__ __DEVICE__ List(const List<T>& list);
+    __HOST__ __DEVICE__ List<T>& operator= (const List<T>& list);
     __HOST__ __DEVICE__ ~List();
 
     __HOST__ __DEVICE__ void push_front(T *data);

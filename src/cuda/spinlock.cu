@@ -10,6 +10,23 @@ __host__ __device__ hd_atomic_flag::hd_atomic_flag() {
 #endif
 }
 
+__host__ __device__ hd_atomic_flag::hd_atomic_flag(const hd_atomic_flag& af) {
+#ifdef __CUDA_ARCH__
+    gpu = af.gpu;
+#else
+    cpu = af.cpu;
+#endif
+}
+
+__host__ __device__ hd_atomic_flag& hd_atomic_flag::operator= (const hd_atomic_flag& af) {
+#ifdef __CUDA_ARCH__
+    gpu = af.gpu;
+#else
+    cpu = af.cpu;
+#endif
+    return *this;
+}
+
 __host__ __device__ hd_atomic_flag::~hd_atomic_flag() {
 #ifdef __CUDA_ARCH__
     gpu = 0;
@@ -19,6 +36,15 @@ __host__ __device__ hd_atomic_flag::~hd_atomic_flag() {
 }
 
 __host__ __device__ Spinlock::Spinlock() : _flag() {
+}
+__host__ __device__ Spinlock::Spinlock(const Spinlock& sl) :
+    _flag(sl._flag) {
+
+    }
+
+__host__ __device__ Spinlock& Spinlock::operator= (const Spinlock& sl) {
+    this->_flag = sl._flag;
+    return *this;
 }
 
 __host__ __device__ Spinlock::~Spinlock() {
@@ -47,5 +73,4 @@ __host__ __device__ void Spinlock::unlock() {
     _flag.cpu.clear(std::memory_order_release); 
 #endif
 }
-
 

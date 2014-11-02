@@ -1,5 +1,7 @@
 
 #include "simplyLinkedList.hpp"
+#include "boid.hpp"
+#include "boidGroup.hpp"
 
 
 template <typename T>
@@ -8,13 +10,32 @@ __host__ __device__ Node<T>::Node(T *data, Node<T> *next) :
 {}
 
 template <typename T>
+__host__ __device__ Node<T>::Node(const Node<T>& node) :
+    data(node.data), next(node.next) 
+{}
+
+template <typename T>
+__host__ __device__ Node<T>& Node<T>::operator= (const Node<T>& node)
+{
+    this->data = node.data; 
+    this->next = node.next; 
+    return *this;
+}
+
+template <typename T>
 __host__ __device__ Node<T>::~Node() {}
 
 template <typename T>
 __host__ __device__ List<T>::List() : first(0), last(0), readMutex(), writeMutex(), nReaders(0) {}
 
 template <typename T>
-__host__ __device__ List<T>::~List() {}
+__host__ __device__ List<T>::List(const List& list) : first(list.first), last(list.last), readMutex(list.readMutex), writeMutex(list.writeMutex), nReaders(list.nReaders) {}
+
+template <typename T>
+__host__ __device__ List<T>::~List() {
+    this->readMutex.unlock();
+    this->writeMutex.unlock();
+}
 
 template <typename T>
 __host__ __device__ void List<T>::push_front(T *data) {
@@ -77,4 +98,6 @@ __host__ __device__ void List<T>::push_back(T *data) {
 }
 
 template class List<char>;
+template class List<Boid>;
+template class List<BoidGroup>;
 

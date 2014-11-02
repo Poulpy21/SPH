@@ -12,19 +12,21 @@
 
 #include <atomic>
 
-// CECI N'EST QU'UNE ILLUSION //
 union hd_atomic_flag {
     std::atomic_flag cpu;
     int gpu;
 
-    __HOST__ __HOST__ __DEVICE__ hd_atomic_flag();
-    __HOST__ __HOST__ __DEVICE__ ~hd_atomic_flag();
+    __HOST__ __DEVICE__ hd_atomic_flag();
+    __HOST__ __DEVICE__ hd_atomic_flag(const hd_atomic_flag& af);
+    __HOST__ __DEVICE__ hd_atomic_flag& operator= (const hd_atomic_flag& af);
+    __HOST__ __DEVICE__ ~hd_atomic_flag();
 };
-// // // // // // // // // //
 
 class Spinlock {
     public: 
         __HOST__ __DEVICE__ Spinlock();
+        __HOST__ __DEVICE__ Spinlock(const Spinlock& sl);
+        __HOST__ __DEVICE__ Spinlock& operator= (const Spinlock& sl);
         __HOST__ __DEVICE__ ~Spinlock();
 
         __HOST__ __DEVICE__ void lock();
