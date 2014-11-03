@@ -17,7 +17,7 @@ OS=$(shell uname -s)
 
 #############
 ## REMINDER #########################################################
-# - Penser à utiliser -isystem  au lieu de -I pour les lib externes! #
+# - Penser à utiliser -isystem  au lieu de -I pour les lib externes #
 # - Nvcc support experimental du c++11 ...                          #
 #####################################################################
 
